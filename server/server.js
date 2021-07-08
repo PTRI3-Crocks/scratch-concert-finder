@@ -4,7 +4,7 @@ const path = require('path');
 const config = require('./config');
 const routes = require('./routes');
 
-const { port } = config;
+const { PORT } = config;
 
 app.use(express.json());
 
@@ -19,14 +19,18 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/', (req, res) => res.status(200).sendFile(path.resolve(__dirname, '../index.html')));
+app.get('/', (req, res) =>
+  res.status(200).sendFile(path.resolve(__dirname, '../index.html'))
+);
 
 app.use('/build', express.static(path.resolve(__dirname, '../build')));
 
 app.use('/api', routes);
 
 // Error Handlers
-app.use((req, res) => res.status(404).send('This is not the page you\'re looking for...'));
+app.use((req, res) =>
+  res.status(404).send("This is not the page you're looking for...")
+);
 
 app.use((err, req, res, next) => {
   const defaultErr = {
@@ -39,7 +43,7 @@ app.use((err, req, res, next) => {
   return res.status(errorObj.status).json(errorObj.message);
 });
 
-app.listen(port, () => console.log(`Listening on port ${port}`));
+app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 module.exports = {
   app,
