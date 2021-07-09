@@ -19,6 +19,8 @@ const createUser = async (req, res, next) => {
   }
 };
 
+
+//THIS IS CURRENTLY NOT BEING USED
 const handleToken = async (req, res, next) => {
   let { tokenId } = req.query;
   if (!tokenId) return next('No token!');
@@ -53,12 +55,14 @@ const handleToken = async (req, res, next) => {
 const sendPlaylist = async (req, res, next) => {
   try {
     const playlist = await getPlaylist(req.body);
-    res.status(200).json(playlist);
-    next();
-  } catch (e) {
-    console.log(e.message);
-    res.sendStatus(500);
-    next(e);
+    res.locals.playlist = playlist;
+    
+    return next();
+  } catch(err){
+    return next({
+        log: 'sendPlaylist controller error',
+        message: { err: `Error occurred in sendPlaylist. err log: ${err}` },
+      });
   }
 };
 
@@ -66,12 +70,14 @@ const sendPotentialLocations = async (req, res, next) => {
   const { searchQuery } = req.body;
   try {
     const searchResults = await getLocationSearchResults(searchQuery);
-    res.status(200).json(searchResults);
-    next();
-  } catch (e) {
-    console.log(e.message);
-    res.sendStatus(500);
-    next(e);
+    res.locals.searchResults = searchResults;
+
+    return next();
+  } catch(err){
+    return next({
+        log: 'sendPotentialLocations controller error',
+        message: { err: `Error occurred in sendPotentialLocations. err log: ${err}` },
+      });
   }
 };
 
@@ -79,17 +85,19 @@ const sendUserDetails = async (req, res, next) => {
   const { id } = req.params;
   try {
     const user = await getUserDetails(id);
-    res.status(200).json(user);
-    next();
-  } catch (e) {
-    console.log(e.message);
-    res.sendStatus(500);
-    next(e);
+    res.locals.user = user;
+    return next();
+  } catch(err){
+    return next({
+        log: 'sendUserDetails controller error',
+        message: { err: `Error occurred in sendUserDetails. err log: ${err}` },
+      });
   }
 };
 
 const sendSpotifyOAuthToken = async (req, res, next) => {
   const { code } = req.body;
+  
   try {
     let token;
     if (code) {
@@ -101,12 +109,14 @@ const sendSpotifyOAuthToken = async (req, res, next) => {
         .sort({ $natural: -1 });
       token = spotifyToken.tokenId;
     }
-    res.status(200).json(token);
-    next();
-  } catch (e) {
-    console.log(e.message);
-    res.sendStatus(500);
-    next(e);
+    res.locals.token = token;
+    
+    return next();
+  } catch(err){
+    return next({
+        log: 'sendSpotifyOAuthToken controller error',
+        message: { err: `Error occurred in sendSpotifyOAuthToken. err log: ${err}` },
+      });
   }
 };
 
