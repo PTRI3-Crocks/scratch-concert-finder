@@ -27,9 +27,9 @@ const Search = () => {
   const [spotifyToken, setSpotifyToken] = useState('');
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    handleFetchSpotifyAccessToken();
-  }, []);
+  // useEffect(() => {
+  //   handleFetchSpotifyAccessToken();
+  // }, []);
 
   const handleFetchSpotifyAccessToken = async () => {
     const code = extractQueryParams('code');
