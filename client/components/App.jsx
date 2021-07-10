@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import Search from './Search';
 import Profile from './Profile';
+import Signin from './Signin';
 
 const theme = extendTheme({});
 
@@ -15,6 +16,9 @@ const App = () => (
         </Route>
         <Route path="/profile">
           <Profile />
+        </Route>
+        <Route path='/signin'>
+          <Signin/>
         </Route>
         <Route path="/">
           <Search />

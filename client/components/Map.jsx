@@ -19,7 +19,7 @@ const Map = () => {
     });
     map.addControl(new mapbox.NavigationControl());
 
-  });
+  },[]);
 
   return (
     <div
