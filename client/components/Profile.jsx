@@ -38,11 +38,19 @@ const Profile = () => {
       <Flex marginTop={10}>
         <Box ml="3">
           <Button
-            onClick={() =>
-              window.open(
-                `https://accounts.spotify.com/authorize?client_id=${process.env.SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri=http:%2F%2Flocalhost:8080%2Fcallback&scope=${scope}`
-              )
-            }
+          /* changed window.open to window.location so that the user is not relocated to a different window but instead relocates in the same tab
+           it might be better to resolve this in a method instead of an onclick
+           this should be moved to the server to keep the client id private
+           this should be a server redirect
+           
+           onClick={() => 
+            invoke a function, that function should invoke useEffect to initiate a get request to the server
+        }
+        */
+        onClick={() =>
+          window.location =
+            `https://accounts.spotify.com/authorize?client_id=${process.env.SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri=http:%2F%2Flocalhost:8080%2Fcallback&scope=${scope}`
+        }
           >
             Spotify Authorization
           </Button>
