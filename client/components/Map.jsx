@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import mapbox from 'mapbox-gl';
 
+
 const Map = () => {
   const [longitude, setLongitude] = useState('-74.0060');
   const [latitude, setLatitude] = useState('40.7128');
