@@ -39,7 +39,7 @@ const Profile = () => {
         <Box ml="3">
           <Button
             onClick={() =>
-              window.open(
+              window.location = (
                 `https://accounts.spotify.com/authorize?client_id=${process.env.SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri=http:%2F%2Flocalhost:8080%2Fcallback&scope=${scope}`
               )
             }

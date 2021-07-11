@@ -19,6 +19,7 @@ import Player from './Player';
 import SearchResults from './SearchResults';
 import Footer from './Footer'
 import style from './Map.css'
+import VenueMap from './VenueMap'
 const Search = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [search, setSearch] = useState('');
@@ -52,7 +53,8 @@ const Search = () => {
 
   return (
     <div>
-      <Map />
+      <VenueMap/>
+      {/* <Map /> */}
       <div className='box overlay'>
         <div className='title'>In The Loop ∞
         <InfoOutlineIcon 
