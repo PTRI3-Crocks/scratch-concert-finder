@@ -66,7 +66,9 @@ const getPlaylist = async ({ placeId }) => {
         return tracksPayload;
       })
     );
+    console.log(p)
     const playlist = [].concat.apply([], p.filter((e) => !!e))
+    console.log('playlist', playlist)
     return playlist;
   } catch (e) {
     throw new Error(`getPlaylist error: ${e.message}`);
