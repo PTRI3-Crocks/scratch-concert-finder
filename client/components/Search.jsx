@@ -34,6 +34,7 @@ const Search = () => {
   const handleFetchSpotifyAccessToken = async () => {
     const code = extractQueryParams('code');
     const token = await FetchSpotifyAccessToken(code);
+    console.log("Token: ", token);
     setSpotifyToken(token);
     setLoading(false)
   };

@@ -1,5 +1,5 @@
 const { User } = require('../db');
-
+const { spotifyCurrentUsersProfile } = require('./spotifyCurrentUsersProfile');
 const getUserDetails = async (id) => {
   try {
     const user = await User.findById(id);
@@ -44,6 +44,14 @@ const getUserDetails = async (id) => {
         ticketsLink: `https://www.google.com/search?q=${'Casey Ahern'}+tickets`,
       },
     ];
+    // send a request to spotify endpoint
+
+    // set the headers to the spotify token which is the id
+    // console.log the response data
+    // grab the user details, place on res object
+    // let userDetails = spotifyCurrentUsersProfile(id);
+    // console.log(userDetails);
+    // send a second request to get favorite songs  
     return {
       id,
       name: user.name,
