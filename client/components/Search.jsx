@@ -16,9 +16,13 @@ import FetchSpotifyAccessToken from '../api/FetchSpotifyAccessToken';
 import extractQueryParams from '../utils/extractQueryParams.js';
 import Map from './Map';
 import Player from './Player';
+import PlayerBar from './PlayerBar';
 import SearchResults from './SearchResults';
 import Footer from './Footer'
 import style from './Map.css'
+
+
+
 const Search = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [search, setSearch] = useState('');
@@ -26,18 +30,29 @@ const Search = () => {
   const [playlist, setPlaylist] = useState([]);
   const [spotifyToken, setSpotifyToken] = useState('');
   const [loading, setLoading] = useState(false);
+  const [track, setTrack] = useState(['spotify:track:4fSIb4hdOQ151TILNsSEaF']);
+  
 
   useEffect(() => {
     handleFetchSpotifyAccessToken();
   }, []);
 
+  useEffect(() => {
+    handleTrack();
+  }, []);
+
+  const handleTrack = () => {
+    if(playlist[0]) setTrack(track);
+    console.log(track)
+  };
+  
   const handleFetchSpotifyAccessToken = async () => {
     const code = extractQueryParams('code');
     const token = await FetchSpotifyAccessToken(code);
     setSpotifyToken(token);
     setLoading(false)
   };
-
+  
   const handleSearchForLocation = async () => {
     const results = await FetchMapSearchResults({ searchQuery: search });
     setSearchResults(results);
@@ -45,7 +60,20 @@ const Search = () => {
 
   const handlePlaylist = async (result) => {
     const playlistData = await FetchPlaylist({ placeId: result.place_id });
-    setPlaylist(playlistData);
+    const artistList = [];
+    const showList = [];
+    const trackList = [];
+    
+    //remove duplicates from api call result
+    for(const entry of playlistData){
+      if(artistList.includes(entry.artist.name)) continue;
+      artistList.push(entry.artist.name);
+      showList.push(entry);
+      trackList.push(entry.track.uri)
+    };
+
+    setPlaylist(showList);
+    setTrack(trackList);
   };
 
   if (loading) return <p>Loading</p>
@@ -99,8 +127,9 @@ const Search = () => {
       {searchResults.length > 0 && playlist.length === 0 && (
         <SearchResults searchResults={searchResults} handlePlaylist={handlePlaylist} className="place-item"/>
       )}
-      {playlist.length > 0 && <Player spotifyToken={spotifyToken} playlist={playlist} />}
+      {playlist.length > 0 && <Player playlist={playlist}/>}
       </div>
+       {spotifyToken !== '' && <PlayerBar spotifyToken={spotifyToken} track={track} />}
       <Footer />
     </div>
   );
