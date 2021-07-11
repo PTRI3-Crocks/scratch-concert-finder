@@ -1,8 +1,8 @@
 import React from 'react';
-import { Text } from '@chakra-ui/react';
-import SpotifyPlayer from 'react-spotify-web-playback';
+import { Box, SimpleGrid } from '@chakra-ui/react';
 
-const Player = ({ spotifyToken, playlist }) => {
+
+const Player = ({ playlist }) => {
   const playerStyle = {
     bgColor: '#000000',
     color: '#dbdbdb',
@@ -15,16 +15,38 @@ const Player = ({ spotifyToken, playlist }) => {
     fontSize: '18px',
   };
 
+  const shows = playlist.map( (ele, index) =>{
+    const year = ele.start.slice(0, 4)
+    const month = ele.start.slice(5, 7)
+    const day = ele.start.slice(8,10)
+    const date = month + '/' + day + '/' + year
+
+    return(
+      <>
+    <Box h="40px" style={{fontSize: '18px'}} >
+      {ele.artist.name}
+    </Box>
+    <Box h="40px" style={{ fontSize: '18px', textDecorationLine: 'underline', fontWeight: 400 }} >
+      {ele.venue} 
+    </Box>
+    <Box h="40px" style={{ fontSize: '16px', fontWeight: 400}} >
+      {date} 
+    </Box>
+    </>
+    )
+  })
+  
+  
   return (
     <div className="searchResults">
-      
-      <p style={{ fontSize: '18px', fontWeight: 400 }}>
-        {playlist[0].artist.name} is playing at {playlist[0].venue} soon!
-      </p>
-      <p style={{ fontSize: '18px', fontWeight: 400 }}>
-        {' '}
-        <a href={playlist[0].ticketsLink}>Click here to buy tickets!</a>{' '}
-      </p>
+
+    <SimpleGrid
+      columns={3} 
+      spacing={2}
+    >
+      {shows}
+    </SimpleGrid>
+    
     </div>
   );
 };
