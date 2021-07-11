@@ -17,9 +17,7 @@ const Player = ({ spotifyToken, playlist }) => {
 
   return (
     <div className="searchResults">
-      <div className="spotify" style={{ width: '47%', marginTop: '20px', backgroundColor: 'none' }}>
-        <SpotifyPlayer token={spotifyToken} uris={[playlist[0].track.uri]} styles={playerStyle} />
-      </div>
+      
       <p style={{ fontSize: '18px', fontWeight: 400 }}>
         {playlist[0].artist.name} is playing at {playlist[0].venue} soon!
       </p>
