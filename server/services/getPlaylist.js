@@ -9,9 +9,7 @@ const getPlaylist = async ({ placeId }) => {
   try {
     const coordinates = await googleMapsPlaceLatLong(placeId);
     const concerts = await predictHQConcerts(coordinates);
-    console.log('concerts ', concerts)
     const spotifyToken = await spotifyAccessToken();
-    console.log('spotify token line 14 ', spotifyToken)
     const p = await Promise.all(
       concerts.map(async (concert) => {
         const { entities, location, start, end, title } = concert;
@@ -24,7 +22,6 @@ const getPlaylist = async ({ placeId }) => {
         });
         if (!artistSearchResults || artistSearchResults.length === 0) return;
         const artist = artistSearchResults[0];
-        console.log('spotify token ', spotifyToken)
         const topTracks = await spotifyArtistTopTracks({ artistId: artist.id, spotifyToken });
         if (!topTracks || topTracks.length === 0) return;
         const tracksToAddtoPlaylist = topTracks.length > 3 ? topTracks.slice(0, 3) : topTracks;
@@ -69,7 +66,9 @@ const getPlaylist = async ({ placeId }) => {
         return tracksPayload;
       })
     );
+    console.log(p)
     const playlist = [].concat.apply([], p.filter((e) => !!e))
+    console.log('playlist', playlist)
     return playlist;
   } catch (e) {
     throw new Error(`getPlaylist error: ${e.message}`);

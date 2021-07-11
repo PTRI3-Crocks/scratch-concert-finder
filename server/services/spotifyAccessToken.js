@@ -1,25 +1,25 @@
 const moment = require('moment');
 const axios = require('axios');
 const qs = require('qs');
-const { Token } = require('../db/index');
 
+const { Token } = require('../db/index');
 const config = require('../config');
 
-const { spotifyClientId, spotifyClientSecret } = config;
-
-const spotifyAccessToken = async (tokenId) => {
+const spotifyAccessToken = async () => {
+  const { spotifyClientId, spotifyClientSecret } = config;
   try {
     // Lookup token information in db
-    const token = await Token.findOne({ tokenId });
-    const spotifyToken = token.tokenId;
-    const spotifyTokenGeneratedAt = token.timestamp;
+    const spotifyToken = await Token.findOne({});
     // If token hasn't expired (1 hour), return the token
-    if (spotifyToken && moment() <= moment(spotifyTokenGeneratedAt).add(1, 'hour')) return spotifyToken;
+    if (spotifyToken && moment() <= moment(spotifyToken.timestamp).add(1, 'hour')) {
+      return spotifyToken.tokenId;
+    }
     // Generate a new Spotify access token
     const encodedIdAndSecret = Buffer.from(`${spotifyClientId}:${spotifyClientSecret}`).toString(
       'base64'
     );
-    var scope = 'user-read-private user-read-email user-read-playback-state streaming user-modify-playback-state';
+    var scope =
+      'user-read-private user-read-email user-read-playback-state streaming user-modify-playback-state';
     const data = qs.stringify({ grant_type: 'client_credentials', scope: scope });
     const config = {
       method: 'post',
@@ -32,7 +32,7 @@ const spotifyAccessToken = async (tokenId) => {
       },
       data: data,
     };
-    const newToken = await axios(config).then(response => response.data.access_token);
+    const newToken = await axios(config).then((response) => response.data.access_token);
     // Save new access token to database
     const source = 'Spotify';
     tokenId = newToken;
@@ -45,6 +45,4 @@ const spotifyAccessToken = async (tokenId) => {
   }
 };
 
-module.exports = {
-  spotifyAccessToken,
-};
+module.exports = spotifyAccessToken;

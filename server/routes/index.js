@@ -1,13 +1,37 @@
 const router = require('express').Router();
-const controllers = require('../controllers');
 
-router.get('/playlist', controllers.sendPlaylist);
-router.get('/location-search', controllers.sendPotentialLocations);
-router.post('/signup', controllers.createUser);
-router.post('/token', controllers.handleToken);
+const spotifyController = require('../controllers/spotifyController');
+const locationController = require('../controllers/locationController');
+const userController = require('../controllers/userController');
+
+// router.post('/signup', controllers.createUser);
+// router.post('/token', controllers.handleToken);
 // router.post('/login', controllers.verifyUser);
-router.post('/playlist', controllers.sendPlaylist);
-router.post('/location-search', controllers.sendPotentialLocations);
-router.get('/user/:id', controllers.sendUserDetails);
 
+
+
+
+router.get('/user/:id', 
+  userController.sendUserDetails,
+  (req, res) => {
+    res.status(200).json(res.locals.user);
+  });
+
+router.post('/location-search', 
+  locationController.sendPotentialLocations,
+  (req, res) => {
+    res.status(200).json(res.locals.searchResults);
+  });
+
+router.post('/spotify-token', 
+  spotifyController.sendOAuthToken,
+  (req, res) => {
+    return res.status(200).json(res.locals.token);
+  });
+  
+router.post('/playlist', 
+  spotifyController.sendPlaylist, 
+  (req, res) => {
+    return res.status(200).json(res.locals.playlist);
+  });
 module.exports = router;
