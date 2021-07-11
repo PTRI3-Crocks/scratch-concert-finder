@@ -15,7 +15,7 @@ const predictHQConcerts = async (coordinates) => {
       },
     };
     return await axios(config).then((response) => {
-      console.log('PREDICT CONCERTS', response.data);
+      // console.log('PREDICT CONCERTS', response.data);
       return response.data.results;
     });
   } catch (e) {

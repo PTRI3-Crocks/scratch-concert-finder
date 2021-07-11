@@ -21,8 +21,13 @@ spotifyController.handleToken = async (req, res, next) => {
 
 spotifyController.sendPlaylist = async (req, res, next) => {
   try {
-    const playlist = await getPlaylist(req.body);
+    const results = await getPlaylist(req.body);
+    // const playlist = await getPlaylist(req.body);
+    const { concerts } = results;
+    const { playlist } = results;
     res.locals.playlist = playlist;
+    res.locals.concerts = concerts;
+    // results && console.log('PLAYLIST SPOT CTRLR ', concerts);
 
     return next();
   } catch (err) {
@@ -41,7 +46,6 @@ spotifyController.sendOAuthToken = async (req, res, next) => {
 
   try {
     let token;
-    console.log('TOKEN ', token);
     if (code) {
       const newSpotifyToken = await spotifyAccessTokenOAuth(code);
       token = newSpotifyToken.access_token;
