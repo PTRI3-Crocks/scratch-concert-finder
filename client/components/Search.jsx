@@ -70,11 +70,16 @@ const Search = () => {
     // const concerts = concertAndPlaylist.concerts
     // concerts&& console.log('CONCERTS IN SEARCH' ,concerts)
     // const playlistData = await FetchPlaylist({ placeId: result.place_id });
-    const playlistConcert = await FetchPlaylist({ placeId: result.place_id })
-    playlistConcert && (console.log(playlistConcert, 'PLD'));
-    playlistConcert && setPlaylistData(playlistConcert.playlist)
-    playlistConcert && setConcerts(playlistConcert.concerts)
-    concerts && console.log('CONCERTS',concerts)
+    const playlistConcert =  FetchPlaylist({ placeId: result.place_id })
+    .then((data)=>{
+      console.log('DATA IN AWAIT' ,data.concerts);
+      setPlaylistData(data.playlist);
+      setConcerts(data.concerts)
+    })
+    playlistConcert && (console.log(playlistConcert.concerts, 'PLD'));
+    // playlistConcert && setPlaylistData(playlistConcert.playlist)
+    // playlistConcert && setConcerts(playlistConcert.concerts)
+     playlistConcert && console.log('CONCERTS',concerts)
     const artistList = [];
     const showList = [];
     const trackList = [];
@@ -130,7 +135,7 @@ searchResults && console.log('SEARCH RESULTS ', searchResults)
           </div>
         </Grid>
         <Grid item xs={4}>
-          <ConcertList/>
+          <ConcertList concerts = {concerts}/>
         </Grid>
         <Grid item xs={8}>
       <VenueMap/>

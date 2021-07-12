@@ -31,9 +31,11 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 800,
   },
 }));
-
-const ConcertList = () => {
+//click on list card, change color, press play button to play sample song, click find tickets opens new tab
+// for whatever ticket vendor, pin changes color on map to indicated the one selected on list.
+const ConcertList = ({ concerts }) => {
   const classes = useStyles();
+  console.log('CONCERT LIST', concerts);
   return (
     <Container className={classes.root}>
       <Card variant="outlined">
@@ -44,12 +46,9 @@ const ConcertList = () => {
         </CardContent>
       </Card>
       <Divider />
-      <EventCard />
-      <EventCard />
-      <EventCard />
-      <EventCard />
-      <EventCard />
-      <EventCard />
+      {concerts?.map((concert, i) => (
+        <EventCard key={i} id={i} concert={concert} />
+      ))}
     </Container>
   );
 };
