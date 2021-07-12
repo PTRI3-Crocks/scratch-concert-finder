@@ -14,7 +14,10 @@ const predictHQConcerts = async (coordinates) => {
         Authorization: `Bearer ${predictHqClientTemporaryToken}`,
       },
     };
-    return await axios(config).then((response) => response.data.results);
+    return await axios(config).then((response) => {
+      // console.log('PREDICT CONCERTS', response.data);
+      return response.data.results;
+    });
   } catch (e) {
     throw new Error(e.message);
   }
