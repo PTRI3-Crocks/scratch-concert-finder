@@ -12,27 +12,26 @@ import {
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
 
-const EventCard = ({ concert }) => {
-  const d = new Date(concert.start);
+const EventCard = ({ event, setTrack }) => {
+  const d = new Date(event.start);
   const m = d.getUTCMonth();
   const date = d.getUTCDate();
   const y = d.getUTCFullYear();
 
-  console.log(concert.entities['0']?.name, d, 'CONCERT IN EVENTCARD');
-  if (concert) {
+  if (event) {
     return (
       <Card variant="outlined">
         <CardContent>
           <Grid container>
             <Grid item xs={8}>
               <Typography variant="h5" component="h5">
-                {concert.title}
+                {event.artist.name}
               </Typography>
               <Typography>{`${m}/${date}/${y}`}</Typography>
-              <Typography>{concert.entities['0']?.name}</Typography>
+              <Typography>{event.venue}</Typography>
             </Grid>
             <Grid item xs={2}>
-              <Fab>
+              <Fab onClick={() => setTrack(event.track.uri)}>
                 <PlayArrowIcon />
               </Fab>
             </Grid>
