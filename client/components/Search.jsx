@@ -33,11 +33,12 @@ const Search = () => {
   const [spotifyToken, setSpotifyToken] = useState('');
   const [loading, setLoading] = useState(false);
   const [track, setTrack] = useState(['spotify:track:4fSIb4hdOQ151TILNsSEaF']);
-  
+  const [placeDisplayType, setPlaceDisplayType] = useState('block')
 
-  // useEffect(() => {
-  //   handleFetchSpotifyAccessToken();
-  // }, []);
+
+  useEffect(() => {
+    handleFetchSpotifyAccessToken();
+  }, []);
 
   useEffect(() => {
     handleTrack();
@@ -62,14 +63,7 @@ const Search = () => {
   };
 
   const handlePlaylist = async (result) => {
-    console.log('handle')
-    // const concertAndPlaylist = await FetchPlaylist({ placeId: result.place_id })
-    // concertAndPlaylist && console.log(concertAndPlaylist, 'IN THEN')
-    // const playlistData = []
-    // const playlistData = concertAndPlaylist.playlist
-    // const concerts = concertAndPlaylist.concerts
-    // concerts&& console.log('CONCERTS IN SEARCH' ,concerts)
-    // const playlistData = await FetchPlaylist({ placeId: result.place_id });
+
     const playlistConcert =  FetchPlaylist({ placeId: result.place_id })
     .then((data)=>{
       console.log('DATA IN AWAIT' ,data.concerts);
@@ -95,7 +89,6 @@ const Search = () => {
     setPlaylist(showList);
     setTrack(trackList);
   };
-
   if (loading) return <p>Loading</p>
 searchResults && console.log('SEARCH RESULTS ', searchResults)
   return (
@@ -125,6 +118,9 @@ searchResults && console.log('SEARCH RESULTS ', searchResults)
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
+              console.log('ENTER', placeDisplayType)
+              setPlaceDisplayType('block')
+              console.log('ENTER', placeDisplayType)
               handleSearchForLocation();
             }
           }}
@@ -157,11 +153,12 @@ searchResults && console.log('SEARCH RESULTS ', searchResults)
           
           
       {searchResults.length > 0 && playlist.length === 0 && (
-        <SearchResults searchResults={searchResults} handlePlaylist={handlePlaylist} className="place-item"/>
+        <SearchResults searchResults={searchResults} handlePlaylist={handlePlaylist} placeDisplayType={placeDisplayType} setPlaceDisplayType={setPlaceDisplayType}  className="place-item" />
       )}
       {playlist.length > 0 && <Player playlist={playlist}/>}
       </div>
        {spotifyToken !== '' && <PlayerBar spotifyToken={spotifyToken} track={track} />}
+       {/* { <PlayerBar spotifyToken={spotifyToken} track={track} />} */}
       <Footer />
     </div>
   );
