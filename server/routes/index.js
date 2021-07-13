@@ -11,6 +11,7 @@ const spotifyAuthController = require('../controllers/spotifyAuthController')
 // This route handles the second step in the Spotify Authorization Process, and intercepts a call from Spotify as specified in the Spotify For Developers App dashboard
 router.get('/callback', 
   spotifyAuthController.requestTokens,
+  spotifyAuthController.getUserData,
   (req, res) => {
     // TODO: Redirect is currently hardcoded. This should be updated to route to our homepage or search
     res.redirect('http://localhost:8080');
