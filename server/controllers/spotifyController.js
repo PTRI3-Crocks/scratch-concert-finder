@@ -12,6 +12,7 @@ spotifyController.handleToken = async (req, res, next) => {
   if (!tokenId) return next('No token!');
   try {
     tokenId = await spotifyAccessToken(tokenId);
+    console.log('tokenId in handleToken', tokenId);
     res.status(200).json(tokenId);
     next();
   } catch (e) {
@@ -43,19 +44,21 @@ spotifyController.sendOAuthToken = async (req, res, next) => {
     let token;
     if (code) {
       const newSpotifyToken = await spotifyAccessTokenOAuth(code);
+      console.log('token in sendOAuthToken', newSpotifyToken);
       token = newSpotifyToken.access_token;
     } else {
-      const spotifyToken = await Token.findOne({ source: 'Spotify OAuth' })
-        .limit(1)
-        .sort({ $natural: -1 });
-      token = spotifyToken.tokenId;
+      // if there is no auth code, I think this else statement just pulls a token from the database...a token from a different user...
+      // const spotifyToken = await Token.findOne({ source: 'Spotify OAuth' })
+      //   .limit(1)
+      //   .sort({ $natural: -1 });
+      // token = spotifyToken.tokenId;
     }
     res.locals.token = token;
     
     return next();
   } catch(err){
     return next({
-        log: 'sendSpotifyOAuthToken controller error',
+        log: 'Error in spotifyController.sendOAuthToken',
         message: { err: `Error occurred in sendSpotifyOAuthToken. err log: ${err}` },
       });
   }

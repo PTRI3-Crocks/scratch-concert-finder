@@ -29,11 +29,13 @@ const Player = ({ spotifyToken, track }) => {
   return (
     
       <div className="spotify" style={style}>
+        {spotifyToken &&
         <SpotifyPlayer 
           token={spotifyToken} 
           uris={track} 
           styles={playerStyle} 
           showSaveIcon={true}/>
+        }
       </div>
     
   );

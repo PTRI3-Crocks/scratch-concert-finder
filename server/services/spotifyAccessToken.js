@@ -37,8 +37,8 @@ const spotifyAccessToken = async () => {
     const source = 'Spotify';
     tokenId = newToken;
     const timestamp = moment();
-    const newTokenData = await new Token({ source, tokenId, timestamp });
-    newTokenData.save();
+    // const newTokenData = await new Token({ source, tokenId, timestamp });
+    // newTokenData.save();
     return newToken;
   } catch (e) {
     throw new Error('spotifyAccessToken error: ' + e.message);

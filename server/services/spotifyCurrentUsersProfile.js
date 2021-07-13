@@ -1,17 +1,19 @@
 const axios = require('axios');
 
-const spotifyCurrentUsersProfile = async ({ spotifyToken }) => {
+const spotifyCurrentUsersProfile = (spotifyToken) => {
   try {
     const requestOptions = {
       method: 'get',
-      url: `https://api.spotify.com/v1/me`,
+      url: 'https://api.spotify.com/v1/me',
       headers: {
-        Authorization: `Bearer + ${spotifyToken}`,
+        Authorization: `Bearer ${spotifyToken}`
       },
     };
-    return await axios(requestOptions).then((response) => console.log(response));
-  } catch (e) {
-    throw new Error('Error in spotifyCurrentUsersProfile.js: ' + e.message);
+    const userResponse = axios(requestOptions);//.then((response) => console.log('response: ', response));
+    //console.log('userResponse ', userResponse);
+    return userResponse;
+  } catch (error) {
+    console.log('Error in spotifyCurrentUsersProfile.js: ' + error.message);
   }
 };
 

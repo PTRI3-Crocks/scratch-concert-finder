@@ -28,7 +28,8 @@ const Search = () => {
   const [search, setSearch] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [playlist, setPlaylist] = useState([]);
-  const [spotifyToken, setSpotifyToken] = useState('');
+  // intialize spotifyToken to null to make checking it's value more simple
+  const [spotifyToken, setSpotifyToken] = useState(null);
   const [loading, setLoading] = useState(false);
   const [track, setTrack] = useState(['spotify:track:4fSIb4hdOQ151TILNsSEaF']);
   
@@ -48,10 +49,14 @@ const Search = () => {
   
   const handleFetchSpotifyAccessToken = async () => {
     const code = extractQueryParams('code');
+    console.log('code in search.jsx: ', code);
+    // check to see if code exists in URL, if it does not, it will be null
+    if (code) {
     const token = await FetchSpotifyAccessToken(code);
     console.log("Token: ", token);
     setSpotifyToken(token);
     setLoading(false)
+    }
   };
   
   const handleSearchForLocation = async () => {
@@ -117,7 +122,7 @@ const Search = () => {
           <DrawerContent>
             <DrawerHeader borderBottomWidth="1px">Your Profile</DrawerHeader>
             <DrawerBody>
-              <Profile />
+              <Profile spotifyToken={spotifyToken} />
             </DrawerBody>
           </DrawerContent>
         </Drawer>
