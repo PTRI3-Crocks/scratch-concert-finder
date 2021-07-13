@@ -8,9 +8,9 @@ const { Token } = require('../db/index');
 const spotifyAccessTokenOAuth = async (code) => {
   const { spotifyClientId, spotifyClientSecret } = config;
   try {
-    const encodedIdAndSecret = Buffer.from(`${spotifyClientId}:${spotifyClientSecret}`).toString(
-      'base64'
-    );
+    const encodedIdAndSecret = Buffer.from(
+      `${spotifyClientId}:${spotifyClientSecret}`
+    ).toString('base64');
     const data = qs.stringify({
       grant_type: 'authorization_code',
       code: code,
@@ -25,7 +25,10 @@ const spotifyAccessTokenOAuth = async (code) => {
       },
       data: data,
     };
-    const token = await axios(config).then((response) => response.data);
+    const token = await axios(config).then((response) => {
+      return response.data;
+    });
+
     const dbPayload = {
       source: 'Spotify OAuth',
       tokenId: token.access_token,
