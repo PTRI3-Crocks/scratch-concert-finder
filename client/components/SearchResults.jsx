@@ -1,12 +1,21 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Center } from '@chakra-ui/react';
 
-const SearchResults = ({ searchResults, handlePlaylist }) => (
-  <div className="placePanel" style={{ cursor: 'pointer' }}>
+const SearchResults = ({ searchResults, handlePlaylist,placeDisplayType, setPlaceDisplayType}) => {
+
+  const style = {
+    display:placeDisplayType
+  }
+  return (
+  <div className="placePanel" style={{ cursor: 'pointer'}}>
     {searchResults.map((result, i) => (
       
         <div
-          onClick={() => handlePlaylist(result)}
+        style={style}
+          onClick={() => { 
+            setPlaceDisplayType('none')
+            return handlePlaylist(result)
+          }}
           key={i}
           id={result.place_id}
           // style={{ marginTop: '2em' }}
@@ -17,6 +26,6 @@ const SearchResults = ({ searchResults, handlePlaylist }) => (
       
     ))}
   </div>
-);
+)};
 
 export default SearchResults;
