@@ -36,7 +36,6 @@ const Player = ({ spotifyToken, track, playlist }) => {
           uris={track} 
           styles={playerStyle} 
           showSaveIcon={true}/>
-        }
       </div>
     
   );

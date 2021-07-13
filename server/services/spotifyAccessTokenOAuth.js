@@ -21,8 +21,8 @@ const spotifyAccessTokenOAuth = async (code) => {
       redirect_uri: 'http://localhost:8080/callback',
     });
 
-    console.log('data: ', data);
-    // USED 'CONFIG' AS AN IMPORT VARIABLE!!! RENAME!!!
+    // console.log('data: ', data);
+   
     const config = {
       method: 'post',
       url: 'https://accounts.spotify.com/api/token/',
@@ -33,13 +33,12 @@ const spotifyAccessTokenOAuth = async (code) => {
       data: data,
     };
     const token = await axios(config).then((response) => response.data);
-    // are they generating their own timestamp? instead of pulling one off the spotify response?
-    // const dbPayload = {
-    //   source: 'Spotify OAuth',
-    //   tokenId: token.access_token,
-    //   timestamp: moment(),
-    // };
-    // await new Token(dbPayload).save();
+    const dbPayload = {
+      source: 'Spotify OAuth',
+      tokenId: token.access_token,
+      timestamp: moment(),
+    };
+    await new Token(dbPayload).save();
     return token;
   } catch (e) {
     throw new Error('spotifyAccessTokenOAuth error: ' + e.message);

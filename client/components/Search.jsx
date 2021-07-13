@@ -40,9 +40,10 @@ const Search = () => {
     handleFetchSpotifyAccessToken();
   }, []);
 
-  // useEffect(() => {
-  //   handleTrack();
-  // }, [playlist,playlistData]);
+  // comment this in? Or, out?
+  useEffect(() => {
+    handleTrack();
+  }, [playlist,playlistData]);
 
   const handleTrack = () => {
     if(playlist[0]) setTrack(track);
@@ -51,11 +52,11 @@ const Search = () => {
   
   const handleFetchSpotifyAccessToken = async () => {
     const code = extractQueryParams('code');
-    console.log('code in search.jsx: ', code);
+    // console.log('code in search.jsx: ', code);
     // check to see if code exists in URL, if it does not, it will be null
     if (code) {
     const token = await FetchSpotifyAccessToken(code);
-    console.log("Token: ", token);
+    // console.log("Token: ", token);
     setSpotifyToken(token);
     setLoading(false)
     }
