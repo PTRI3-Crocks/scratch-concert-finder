@@ -57,6 +57,7 @@ const Search = () => {
   };
   
   const handleSearchForLocation = async () => {
+    search && console.log(search,'SEARCH CLICKED')
     const results = await FetchMapSearchResults({ searchQuery: search });
     results && console.log('RESULTS', results)
     setSearchResults(results);
@@ -118,9 +119,7 @@ searchResults && console.log('SEARCH RESULTS ', searchResults)
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
-              console.log('ENTER', placeDisplayType)
               setPlaceDisplayType('block')
-              console.log('ENTER', placeDisplayType)
               handleSearchForLocation();
             }
           }}
@@ -134,7 +133,7 @@ searchResults && console.log('SEARCH RESULTS ', searchResults)
           <ConcertList concerts = {concerts}/>
         </Grid>
         <Grid item xs={8}>
-      <VenueMap/>
+      <VenueMap search={search}/>
       </Grid>
       </Grid>
       {/* <Map /> */}
