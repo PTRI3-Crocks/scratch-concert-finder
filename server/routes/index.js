@@ -35,17 +35,16 @@ router.post('/location-search',
   locationController.sendPotentialLocations,
   (req, res) => {
     res.status(200).json(res.locals.searchResults);
-  });
+  }
+);
 
-router.post('/spotify-token', 
-  spotifyController.sendOAuthToken,
-  (req, res) => {
-    return res.status(200).json(res.locals.token);
-  });
-  
-router.post('/playlist', 
-  spotifyController.sendPlaylist, 
-  (req, res) => {
-    return res.status(200).json(res.locals.playlist);
-  });
+router.post('/spotify-token', spotifyController.sendOAuthToken, (req, res) => {
+  return res.status(200).json(res.locals.token);
+});
+
+router.post('/playlist', spotifyController.sendPlaylist, (req, res) => {
+  return res.status(200).json(res.locals);
+  // return res.status(200).json(res.locals.playlist);
+  //res.locals.concerts
+});
 module.exports = router;

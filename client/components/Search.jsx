@@ -8,6 +8,7 @@ import {
   DrawerHeader,
   DrawerContent,
 } from '@chakra-ui/react';
+import { Box, Card, Grid } from '@material-ui/core';
 import { InfoOutlineIcon } from '@chakra-ui/icons';
 import FetchMapSearchResults from '../api/FetchMapSearchResults';
 import FetchPlaylist from '../api/FetchPlaylist';
@@ -20,27 +21,28 @@ import PlayerBar from './PlayerBar';
 import SearchResults from './SearchResults';
 import Footer from './Footer'
 import style from './Map.css'
-
-
-
+import VenueMap from './VenueMap'
+import ConcertList from './ConcertList'
 const Search = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [search, setSearch] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [playlist, setPlaylist] = useState([]);
-  // intialize spotifyToken to null to make checking it's value more simple
-  const [spotifyToken, setSpotifyToken] = useState(null);
+  const [playlistData, setPlaylistData] = useState([])
+  const [concerts, setConcerts] = useState([])
+  const [spotifyToken, setSpotifyToken] = useState('');
   const [loading, setLoading] = useState(false);
   const [track, setTrack] = useState(['spotify:track:4fSIb4hdOQ151TILNsSEaF']);
-  
+  const [placeDisplayType, setPlaceDisplayType] = useState('block')
+
 
   useEffect(() => {
     handleFetchSpotifyAccessToken();
   }, []);
 
-  useEffect(() => {
-    handleTrack();
-  }, []);
+  // useEffect(() => {
+  //   handleTrack();
+  // }, [playlist,playlistData]);
 
   const handleTrack = () => {
     if(playlist[0]) setTrack(track);
@@ -65,7 +67,14 @@ const Search = () => {
   };
 
   const handlePlaylist = async (result) => {
-    const playlistData = await FetchPlaylist({ placeId: result.place_id });
+
+    const playlistConcert =  FetchPlaylist({ placeId: result.place_id })
+    .then((data)=>{
+      console.log(data)
+      setPlaylistData(data.playlist);
+      setConcerts(data.concerts)
+    })
+ 
     const artistList = [];
     const showList = [];
     const trackList = [];
@@ -77,17 +86,17 @@ const Search = () => {
       showList.push(entry);
       trackList.push(entry.track.uri)
     };
-
+    
     setPlaylist(showList);
     setTrack(trackList);
   };
-
   if (loading) return <p>Loading</p>
-
+searchResults && console.log('SEARCH RESULTS ', searchResults)
   return (
     <div>
-      <Map />
-      <div className='box overlay'>
+      <Grid container>
+      <Grid item xs={12}>
+      <div >
         <div className='title'>In The Loop ∞
         <InfoOutlineIcon 
         onClick={onOpen} 
@@ -110,12 +119,26 @@ const Search = () => {
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
+              
+              setPlaceDisplayType('block')
               handleSearchForLocation();
             }
           }}
         />
         </div>
         </div>
+        <div className="places">Search for concerts and events near you!
+          </div>
+        </Grid>
+        <Grid item xs={4}>
+          <ConcertList playlistData={playlistData} setTrack={setTrack}/>
+        </Grid>
+        <Grid item xs={8}>
+      <VenueMap/>
+      </Grid>
+      </Grid>
+      {/* <Map /> */}
+
 
         <Drawer placement="right" onClose={onClose} isOpen={isOpen} w={'25%'}>
           <DrawerOverlay />
@@ -127,15 +150,25 @@ const Search = () => {
           </DrawerContent>
         </Drawer>
         <div className="placesPanel">
-          <div className="places">Search for concerts and events near you!
-          </div>
+          
           
       {searchResults.length > 0 && playlist.length === 0 && (
-        <SearchResults searchResults={searchResults} handlePlaylist={handlePlaylist} className="place-item"/>
+        <SearchResults 
+          searchResults={searchResults} 
+          handlePlaylist={handlePlaylist} 
+          placeDisplayType={placeDisplayType}  
+          setPlaceDisplayType={setPlaceDisplayType}  
+          className="place-item" />
       )}
-      {playlist.length > 0 && <Player playlist={playlist}/>}
+      
       </div>
-       {spotifyToken !== '' && <PlayerBar spotifyToken={spotifyToken} track={track} />}
+       {spotifyToken !== '' && 
+       <PlayerBar 
+          spotifyToken={spotifyToken} 
+          track={track} 
+          playlist={playlist}
+       />}
+       
       <Footer />
     </div>
   );

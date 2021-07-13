@@ -12,12 +12,10 @@ const spotifyAccessTokenOAuth = async (code) => {
   // destructure the clientId and clientSecret from the config
   const { spotifyClientId, spotifyClientSecret } = config;
   try {
-    // create a base64 string to send as a header to spotify, composed of id and secret
-    const encodedIdAndSecret = Buffer.from(`${spotifyClientId}:${spotifyClientSecret}`).toString(
-      'base64'
-    );
-    // create a data object to be passed to spotify?
-    const data = qs.stringify({
+  const encodedIdAndSecret = Buffer.from(
+      `${spotifyClientId}:${spotifyClientSecret}`
+    ).toString('base64');
+  const data = qs.stringify({
       grant_type: 'authorization_code',
       code: code,
       redirect_uri: 'http://localhost:8080/callback',
