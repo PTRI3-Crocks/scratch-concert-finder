@@ -24,41 +24,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const VenueMap = () => {
+const VenueMap = ({ search, mapZip }) => {
+  search && console.log('SEARCH IN VENUE ', search);
   // set Markers state
-  // 190 E 72nd St APT 11B, New York, NY 10021
-  /** Marker data should look like this
-   * {
-    "properties": {
-      "Street address": "",
-      "City": "",
-      "State": "",
-      "Zip code": "",
-      "Address": "",
-      "Price": "",
-      "Interest rate": 0,
-      "Type": "",
-      "Size": "",
-      "# bedrooms": 0,
-      "# bathrooms": 0,
-      "Est. monthly mortgage": 0,
-      "Rent array": "",
-      "Est. monthly rent": "",
-      "Price-to-rent ratio": "",
-      "Rating": "",
-      "Image": "",
-      "ZPID": 0
-    },
-    "geometry": {
-      "coordinates": [
-        0,
-        0
-        
-      ],
-      "type": "Point"
-    }
-  }
-   */
+
   const [status, setStatus] = useState(null);
 
   const [markers, setMarkers] = useState({});
@@ -110,7 +79,35 @@ const VenueMap = () => {
     left: 0,
     padding: '10px',
   };
+  const zipConvert = async (zip) => {
+    await axios(
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${zip}&key=${process.env.GOOGLE_MAPS_API_KEY}`
+    ).then((data) => {
+      console.log('ZIP CONVERT', data);
 
+      handleViewportChange({
+        longitude: data?.data.results['0'].geometry.location.lng,
+        latitude: data?.data.results['0'].geometry.location.lat,
+        zoom: 12,
+        bearing: 0,
+        pitch: 0,
+      });
+
+      console.log(
+        'ZIP ',
+        data?.data.results['0'].geometry.location.lat,
+        data?.data.results['0'].geometry.location.lng
+      );
+    });
+  };
+  useEffect(() => {
+    mapZip && zipConvert(mapZip);
+  }, [mapZip]);
+  //   useEffect(() => {
+  //     search && zipConvert(search);
+  //   }, [search]);
+
+  //when click on location in search, set viewport.
   const [viewport, setViewport] = useState({
     // default location - NY,NY
     longitude: -73.9712,
@@ -159,7 +156,7 @@ const VenueMap = () => {
             {...mapStyle}
             onViewportChange={handleViewportChange}
           >
-            {/* <MarkersList props={markers} status={status} /> */}
+            {/* <MarkersList markers={markers} status={status} /> */}
 
             <div style={navStyle}>
               <NavigationControl />
