@@ -23,6 +23,7 @@ import Footer from './Footer'
 import style from './Map.css'
 import VenueMap from './VenueMap'
 import ConcertList from './ConcertList'
+
 const Search = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [search, setSearch] = useState('');
@@ -40,23 +41,13 @@ const Search = () => {
     handleFetchSpotifyAccessToken();
   }, []);
 
-  // comment this in? Or, out?
-  useEffect(() => {
-    handleTrack();
-  }, [playlist,playlistData]);
-
-  const handleTrack = () => {
-    if(playlist[0]) setTrack(track);
-    console.log(track)
-  };
   
   const handleFetchSpotifyAccessToken = async () => {
     const code = extractQueryParams('code');
-    // console.log('code in search.jsx: ', code);
+    
     // check to see if code exists in URL, if it does not, it will be null
     if (code) {
     const token = await FetchSpotifyAccessToken(code);
-    // console.log("Token: ", token);
     setSpotifyToken(token);
     setLoading(false)
     }
@@ -65,6 +56,7 @@ const Search = () => {
   const handleSearchForLocation = async () => {
     const results = await FetchMapSearchResults({ searchQuery: search });
     setSearchResults(results);
+    setSearch('');
   };
 
   const handlePlaylist = async (result) => {
@@ -153,7 +145,7 @@ searchResults && console.log('SEARCH RESULTS ', searchResults)
         <div className="placesPanel">
           
           
-      {searchResults.length > 0 && playlist.length === 0 && (
+      {searchResults.length > 0 && (
         <SearchResults 
           searchResults={searchResults} 
           handlePlaylist={handlePlaylist} 

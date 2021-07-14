@@ -1,11 +1,15 @@
 import React, {useState} from 'react';
-import { Center } from '@chakra-ui/react';
+import { background, Center } from '@chakra-ui/react';
 
 const SearchResults = ({ searchResults, handlePlaylist,placeDisplayType, setPlaceDisplayType}) => {
 
   const style = {
-    display:placeDisplayType
+    display:placeDisplayType,
+    // background: 'rgba(255, 255, 255, 0.6)'
+    
   }
+    
+  
   return (
   <div className="placePanel" style={{ cursor: 'pointer'}}>
     {searchResults.map((result, i) => (
