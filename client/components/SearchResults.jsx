@@ -5,7 +5,8 @@ const SearchResults = ({ searchResults, handlePlaylist,placeDisplayType, setPlac
 
   console.log(placeDisplayType, 'DISPLAY IN RESULTS')
   const style = {
-    display:placeDisplayType
+    display:placeDisplayType,
+    backgroundColor: 'd3d3d3'
   }
   return (
   <div className="placePanel" style={{ cursor: 'pointer'}}>
@@ -14,10 +15,8 @@ const SearchResults = ({ searchResults, handlePlaylist,placeDisplayType, setPlac
         <div
         style={style}
           onClick={() => { 
-            console.log('ONCLICK', placeDisplayType)
+            handlePlaylist(result)
             setPlaceDisplayType('none')
-            console.log(placeDisplayType)
-            return handlePlaylist(result)
           }}
           key={i}
           id={result.place_id}

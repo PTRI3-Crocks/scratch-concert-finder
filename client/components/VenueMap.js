@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const VenueMap = ({ search }) => {
+const VenueMap = ({ search, mapZip }) => {
   search && console.log('SEARCH IN VENUE ', search);
   // set Markers state
 
@@ -101,8 +101,11 @@ const VenueMap = ({ search }) => {
     });
   };
   useEffect(() => {
-    search && zipConvert(search);
-  }, [search]);
+    mapZip && zipConvert(mapZip);
+  }, [mapZip]);
+  //   useEffect(() => {
+  //     search && zipConvert(search);
+  //   }, [search]);
 
   //when click on location in search, set viewport.
   const [viewport, setViewport] = useState({
