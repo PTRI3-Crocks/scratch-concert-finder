@@ -9,9 +9,7 @@ const getPlaylist = async ({ placeId }) => {
   try {
     const coordinates = await googleMapsPlaceLatLong(placeId);
     const concerts = await predictHQConcerts(coordinates);
-    console.log('concerts ', concerts)
     const spotifyToken = await spotifyAccessToken();
-    console.log('spotify token line 14 ', spotifyToken)
     const p = await Promise.all(
       concerts.map(async (concert) => {
         const { entities, location, start, end, title } = concert;
@@ -24,10 +22,13 @@ const getPlaylist = async ({ placeId }) => {
         });
         if (!artistSearchResults || artistSearchResults.length === 0) return;
         const artist = artistSearchResults[0];
-        console.log('spotify token ', spotifyToken)
-        const topTracks = await spotifyArtistTopTracks({ artistId: artist.id, spotifyToken });
+        const topTracks = await spotifyArtistTopTracks({
+          artistId: artist.id,
+          spotifyToken,
+        });
         if (!topTracks || topTracks.length === 0) return;
-        const tracksToAddtoPlaylist = topTracks.length > 3 ? topTracks.slice(0, 3) : topTracks;
+        const tracksToAddtoPlaylist =
+          topTracks.length > 3 ? topTracks.slice(0, 3) : topTracks;
         const distance = await googleMapsDistance({
           pointA: placeId,
           pointB: venue.formatted_address,
@@ -39,7 +40,7 @@ const getPlaylist = async ({ placeId }) => {
               name: track.name,
               uri: track.uri,
               href: track.href,
-              external_urls: track.external_urls
+              external_urls: track.external_urls,
             },
             album: {
               id: track.album.id,
@@ -47,14 +48,14 @@ const getPlaylist = async ({ placeId }) => {
               uri: track.album.uri,
               images: track.album.images,
               href: track.album.href,
-              external_urls: track.album.external_urls
+              external_urls: track.album.external_urls,
             },
             artist: {
               id: track.artists[0].id,
               name: track.artists[0].name,
               href: track.artists[0].href,
               uri: track.artists[0].uri,
-              external_urls: track.artists[0].external_urls
+              external_urls: track.artists[0].external_urls,
             },
             venue: venue.name,
             address: venue.formatted_address,
@@ -69,8 +70,16 @@ const getPlaylist = async ({ placeId }) => {
         return tracksPayload;
       })
     );
-    const playlist = [].concat.apply([], p.filter((e) => !!e))
-    return playlist;
+    // console.log(p);
+    const playlist = [].concat.apply(
+      [],
+      p.filter((e) => !!e)
+    );
+    const result = { playlist, concerts };
+    // result && console.log('RESULT', result);
+    // console.log('playlist', concerts);
+    // return playlist;
+    return result;
   } catch (e) {
     throw new Error(`getPlaylist error: ${e.message}`);
   }
