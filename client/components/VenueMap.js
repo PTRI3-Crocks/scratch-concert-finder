@@ -9,7 +9,7 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
-// import MarkersList from './MarkersList';
+import MarkerList from './MarkerList';
 import axios from 'axios';
 
 const mapboxApiKey = process.env.MAPBOXAPIKEY;
@@ -24,8 +24,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const VenueMap = ({ search, mapZip }) => {
+const VenueMap = ({ search, mapZip, playlistData, cardClicked }) => {
   search && console.log('SEARCH IN VENUE ', search);
+  playlistData && console.log('PLAYLIST DATA IN VENUEMAP ', playlistData);
   // set Markers state
 
   const [status, setStatus] = useState(null);
@@ -35,6 +36,9 @@ const VenueMap = ({ search, mapZip }) => {
   console.log('markers data ', markers);
 
   useEffect(() => {
+    setMarkers(playlistData);
+    setStatus('done');
+    console.log('USE EFFECT DONE', status);
     const defaultLocation = 'Mountain View, CA';
     // const fetchMarkers = async () => {
     //   // update API call status
@@ -61,7 +65,7 @@ const VenueMap = ({ search, mapZip }) => {
     //   }
     // };
     // fetchMarkers();
-  }, []);
+  }, [playlistData]);
 
   const classes = useStyles('');
 
@@ -70,7 +74,7 @@ const VenueMap = ({ search, mapZip }) => {
 
   const mapStyle = {
     width: '100%',
-    height: '800px',
+    height: '80vh',
   };
 
   const navStyle = {
@@ -83,7 +87,7 @@ const VenueMap = ({ search, mapZip }) => {
     await axios(
       `https://maps.googleapis.com/maps/api/geocode/json?address=${zip}&key=${process.env.GOOGLE_MAPS_API_KEY}`
     ).then((data) => {
-      console.log('ZIP CONVERT', data);
+      //   console.log('ZIP CONVERT', data);
 
       handleViewportChange({
         longitude: data?.data.results['0'].geometry.location.lng,
@@ -156,7 +160,11 @@ const VenueMap = ({ search, mapZip }) => {
             {...mapStyle}
             onViewportChange={handleViewportChange}
           >
-            {/* <MarkersList markers={markers} status={status} /> */}
+            <MarkerList
+              markers={markers}
+              status={status}
+              cardClicked={cardClicked}
+            />
 
             <div style={navStyle}>
               <NavigationControl />
@@ -164,13 +172,13 @@ const VenueMap = ({ search, mapZip }) => {
           </ReactMapGL>
         </Grid>
       </div>
-      <div>
+      {/* <div>
         <Paper className={classes.paper}>
           xs=12 lat: {viewport.latitude} <br />
           lng: {viewport.longitude} <br />
           zoom: {viewport.zoom}
         </Paper>
-      </div>
+      </div> */}
     </Container>
   );
 };
