@@ -1,8 +1,8 @@
 const { User } = require('../db');
-
+const { spotifyCurrentUsersProfile } = require('./spotifyCurrentUsersProfile');
 const getUserDetails = async (id) => {
   try {
-    const user = await User.findById(id);
+    // const user = await User.findById(id);
     const favoriteSongs = [
       {
         track: {
@@ -44,12 +44,22 @@ const getUserDetails = async (id) => {
         ticketsLink: `https://www.google.com/search?q=${'Casey Ahern'}+tickets`,
       },
     ];
+    // send a request to spotify endpoint
+
+    // set the headers to the spotify token which is the id
+    // console.log the response data
+    // grab the user details, place on res object
+    console.log('id: ', id)
+    let userDetails = spotifyCurrentUsersProfile(id);//'BQDB3Mn4tr6Hle_W0XEXOKMHLM8C8zk1FiHxU71mbUXI9TTAK1zW-7blNIUt47ZN2EBHEbgX26NPuaKaDeAXpIcYV6z0ZTIsoJTHpOoP2XtT64Giqhc9l_1UiPYjdbPx0x4L_k18wVsHfL4OVdtW6_KC-S6tjgAAdU9Dy0B-OgUVN-ZQqvOwhW-K6maMMFfJSWDh-T_JE8s_VHmKBltUGJELkGeexIey0ticIqmmsQbgW9D78-ybPsNldNUmsZWHJ4MnW6NxsfKjk3kPI3IaTtE');
+    //console.log(userDetails);
+    const { display_name, email } = userDetails;
     return {
-      id,
-      name: user.name,
-      email: user.email,
+      name: display_name,
+      email: email,
+      image: '',
       favoriteSongs: favoriteSongs,
     };
+    // send a second request to get favorite songs  
   } catch (e) {
     throw new Error(`getUserDetails error: ${e.message}`);
   }

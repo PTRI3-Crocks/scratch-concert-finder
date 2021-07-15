@@ -3,10 +3,12 @@ const app = express();
 const path = require('path');
 const config = require('./config');
 const routes = require('./routes');
+const cookieParser = require('cookie-parser');
 
 const { port } = config;
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');

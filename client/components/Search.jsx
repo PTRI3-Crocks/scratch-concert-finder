@@ -31,17 +31,48 @@ const Search = () => {
   const [playlistData, setPlaylistData] = useState([])
   const [concerts, setConcerts] = useState([])
   const [spotifyToken, setSpotifyToken] = useState('');
+  const [refreshToken, setRefreshToken] = useState('')
   const [loading, setLoading] = useState(false);
   const [track, setTrack] = useState(['spotify:track:4fSIb4hdOQ151TILNsSEaF']);
-  
+  const [placeDisplayType, setPlaceDisplayType] = useState('block')
+  const [mapZip, setMapZip] = useState('08901')
+  const [cardClicked, setCardClicked] = useState(null)
 
-  // useEffect(() => {
-  //   handleFetchSpotifyAccessToken();
-  // }, []);
+
+  function getHashParams() {
+    const hashParams = {};
+    let e, r = /([^&;=]+)=?([^&;]*)/g,
+        q = window.location.hash.substring(1);
+    while ( e = r.exec(q)) {
+       hashParams[e[1]] = decodeURIComponent(e[2]);
+    }
+    let access_token = hashParams.access_token;
+    let refresh_token = hashParams.refresh_token;
+    
+    console.log('access_token in search.jsx ', access_token);
+    console.log('refresh_token in search.jsx ', refresh_token);
+
+    setSpotifyToken(access_token);
+    setRefreshToken(refresh_token);
+
+    history.replaceState(null, '', '/')
+  }
+
+  useEffect(( )=> {
+    getHashParams();
+  }, [])
+ 
+
+
 
   useEffect(() => {
-    handleTrack();
+    handleFetchSpotifyAccessToken();
   }, []);
+
+  // comment this in? Or, out?
+  useEffect(() => {
+    handleTrack();
+  }, [playlist,playlistData]);
 
   const handleTrack = () => {
     if(playlist[0]) setTrack(track);
@@ -50,36 +81,33 @@ const Search = () => {
   
   const handleFetchSpotifyAccessToken = async () => {
     const code = extractQueryParams('code');
+    // console.log('code in search.jsx: ', code);
+    // check to see if code exists in URL, if it does not, it will be null
+    if (code) {
     const token = await FetchSpotifyAccessToken(code);
+    // console.log("Token: ", token);
     setSpotifyToken(token);
     setLoading(false)
+    }
   };
   
   const handleSearchForLocation = async () => {
+    // search && console.log(search,'SEARCH CLICKED')
     const results = await FetchMapSearchResults({ searchQuery: search });
-    results && console.log('RESULTS', results)
     setSearchResults(results);
   };
 
   const handlePlaylist = async (result) => {
-    console.log('handle')
-    // const concertAndPlaylist = await FetchPlaylist({ placeId: result.place_id })
-    // concertAndPlaylist && console.log(concertAndPlaylist, 'IN THEN')
-    // const playlistData = []
-    // const playlistData = concertAndPlaylist.playlist
-    // const concerts = concertAndPlaylist.concerts
-    // concerts&& console.log('CONCERTS IN SEARCH' ,concerts)
-    // const playlistData = await FetchPlaylist({ placeId: result.place_id });
+     console.log('HANDLE PLAYLIST ',result.structured_formatting.main_text)
+     setMapZip(result.structured_formatting.main_text)
+    console.log('MAPZIP ',mapZip)
     const playlistConcert =  FetchPlaylist({ placeId: result.place_id })
     .then((data)=>{
-      console.log('DATA IN AWAIT' ,data.concerts);
+      console.log(data)
       setPlaylistData(data.playlist);
       setConcerts(data.concerts)
     })
-    playlistConcert && (console.log(playlistConcert.concerts, 'PLD'));
-    // playlistConcert && setPlaylistData(playlistConcert.playlist)
-    // playlistConcert && setConcerts(playlistConcert.concerts)
-     playlistConcert && console.log('CONCERTS',concerts)
+ 
     const artistList = [];
     const showList = [];
     const trackList = [];
@@ -95,9 +123,9 @@ const Search = () => {
     setPlaylist(showList);
     setTrack(trackList);
   };
-
   if (loading) return <p>Loading</p>
 searchResults && console.log('SEARCH RESULTS ', searchResults)
+playlistData && console.log('PLAYLIST DATA ', playlistData['0']?.location)
   return (
     <div>
       <Grid container>
@@ -123,8 +151,10 @@ searchResults && console.log('SEARCH RESULTS ', searchResults)
           bg="white"
           placeholder="Enter your Zip Code to hear artists playing near you"
           onChange={(e) => setSearch(e.target.value)}
-          onKeyDown={(e) => {
+          onKeyDown={async (e) => {
             if (e.key === 'Enter') {
+              
+              await setPlaceDisplayType('block')
               handleSearchForLocation();
             }
           }}
@@ -135,10 +165,10 @@ searchResults && console.log('SEARCH RESULTS ', searchResults)
           </div>
         </Grid>
         <Grid item xs={4}>
-          <ConcertList concerts = {concerts}/>
+          <ConcertList playlistData={playlistData} setTrack={setTrack} cardClicked={cardClicked} setCardClicked ={setCardClicked}/>
         </Grid>
         <Grid item xs={8}>
-      <VenueMap/>
+      <VenueMap search={search} mapZip ={mapZip} playlistData={playlistData} cardClicked={cardClicked}/>
       </Grid>
       </Grid>
       {/* <Map /> */}
@@ -149,7 +179,7 @@ searchResults && console.log('SEARCH RESULTS ', searchResults)
           <DrawerContent>
             <DrawerHeader borderBottomWidth="1px">Your Profile</DrawerHeader>
             <DrawerBody>
-              <Profile />
+              <Profile spotifyToken={spotifyToken} />
             </DrawerBody>
           </DrawerContent>
         </Drawer>
@@ -157,11 +187,22 @@ searchResults && console.log('SEARCH RESULTS ', searchResults)
           
           
       {searchResults.length > 0 && playlist.length === 0 && (
-        <SearchResults searchResults={searchResults} handlePlaylist={handlePlaylist} className="place-item"/>
+        <SearchResults 
+          searchResults={searchResults} 
+          handlePlaylist={handlePlaylist} 
+          placeDisplayType={placeDisplayType}  
+          setPlaceDisplayType={setPlaceDisplayType}  
+          className="place-item" />
       )}
-      {playlist.length > 0 && <Player playlist={playlist}/>}
+      
       </div>
-       {spotifyToken !== '' && <PlayerBar spotifyToken={spotifyToken} track={track} />}
+       {spotifyToken !== '' && 
+       <PlayerBar 
+          spotifyToken={spotifyToken} 
+          track={track} 
+          playlist={playlist}
+       />}
+       
       <Footer />
     </div>
   );
