@@ -31,6 +31,7 @@ const Search = () => {
   const [playlistData, setPlaylistData] = useState([])
   const [concerts, setConcerts] = useState([])
   const [spotifyToken, setSpotifyToken] = useState('');
+  const [refreshToken, setRefreshToken] = useState('')
   const [loading, setLoading] = useState(false);
   const [track, setTrack] = useState(['spotify:track:4fSIb4hdOQ151TILNsSEaF']);
   const [placeDisplayType, setPlaceDisplayType] = useState('block')
@@ -38,13 +39,40 @@ const Search = () => {
   const [cardClicked, setCardClicked] = useState(null)
 
 
+  function getHashParams() {
+    const hashParams = {};
+    let e, r = /([^&;=]+)=?([^&;]*)/g,
+        q = window.location.hash.substring(1);
+    while ( e = r.exec(q)) {
+       hashParams[e[1]] = decodeURIComponent(e[2]);
+    }
+    let access_token = hashParams.access_token;
+    let refresh_token = hashParams.refresh_token;
+    
+    console.log('access_token in search.jsx ', access_token);
+    console.log('refresh_token in search.jsx ', refresh_token);
+
+    setSpotifyToken(access_token);
+    setRefreshToken(refresh_token);
+
+    history.replaceState(null, '', '/')
+  }
+
+  useEffect(( )=> {
+    getHashParams();
+  }, [])
+ 
+
+
+
   useEffect(() => {
     handleFetchSpotifyAccessToken();
   }, []);
 
-  // useEffect(() => {
-  //   handleTrack();
-  // }, [playlist,playlistData]);
+  // comment this in? Or, out?
+  useEffect(() => {
+    handleTrack();
+  }, [playlist,playlistData]);
 
   const handleTrack = () => {
     if(playlist[0]) setTrack(track);
@@ -53,9 +81,14 @@ const Search = () => {
   
   const handleFetchSpotifyAccessToken = async () => {
     const code = extractQueryParams('code');
+    // console.log('code in search.jsx: ', code);
+    // check to see if code exists in URL, if it does not, it will be null
+    if (code) {
     const token = await FetchSpotifyAccessToken(code);
+    // console.log("Token: ", token);
     setSpotifyToken(token);
     setLoading(false)
+    }
   };
   
   const handleSearchForLocation = async () => {
@@ -146,7 +179,7 @@ playlistData && console.log('PLAYLIST DATA ', playlistData['0']?.location)
           <DrawerContent>
             <DrawerHeader borderBottomWidth="1px">Your Profile</DrawerHeader>
             <DrawerBody>
-              <Profile />
+              <Profile spotifyToken={spotifyToken} />
             </DrawerBody>
           </DrawerContent>
         </Drawer>
