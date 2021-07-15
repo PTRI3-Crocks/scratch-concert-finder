@@ -80,12 +80,11 @@ spotifyAuthController.requestTokens = (req, res, next) => {
 
       res.locals.access_token = access_token;
       res.locals.refresh_token = refresh_token;
-      console.log('access_token: ', access_token);
-      console.log('refresh_token: ', refresh_token);
-      console.log('response.data.expires_in, ', response.data.expires_in);
+      console.log('access_token in spotifyAuthController.requestTokens: ', access_token);
+      console.log('access_token in spotifyAuthController.requestTokens: ', refresh_token);
         
-      res.cookie('access_token', access_token, {maxAge: 3600});
       res.cookie('refresh_token', refresh_token, {maxAge: 2592000}); 
+
       return next();
     } else {
       console.log('This is the response error from spotify: ', response.data.error);
@@ -115,8 +114,8 @@ spotifyAuthController.getUserData = (req, res, next) => {
 }
 
 // This controller uses the refresh token (stored in users cookies) to get a new access token
-spotifyAuthController.exchangeRefreshToken = ((req, res, next) => {
-
+spotifyAuthController.exchangeRefreshToken = (req, res, next) => {
+  // check if req.cookies.refresh_token exists, and if it does invoke this code
     const refresh_token = req.query.refresh_token;
     const options = {
       method: 'POST',
@@ -142,7 +141,7 @@ spotifyAuthController.exchangeRefreshToken = ((req, res, next) => {
     .catch((err) => {
       console.log("error in sporifyAuthController.exchangeRefreshToken, ", err)
     })
-})
+}
 
 
 

@@ -31,10 +31,37 @@ const Search = () => {
   const [playlistData, setPlaylistData] = useState([])
   const [concerts, setConcerts] = useState([])
   const [spotifyToken, setSpotifyToken] = useState('');
+  const [refreshToken, setRefreshToken] = useState('')
   const [loading, setLoading] = useState(false);
   const [track, setTrack] = useState(['spotify:track:4fSIb4hdOQ151TILNsSEaF']);
   const [placeDisplayType, setPlaceDisplayType] = useState('block')
   const [mapZip, setMapZip] = useState('08901')
+
+
+  function getHashParams() {
+    const hashParams = {};
+    let e, r = /([^&;=]+)=?([^&;]*)/g,
+        q = window.location.hash.substring(1);
+    while ( e = r.exec(q)) {
+       hashParams[e[1]] = decodeURIComponent(e[2]);
+    }
+    let access_token = hashParams.access_token;
+    let refresh_token = hashParams.refresh_token;
+    
+    console.log('access_token in search.jsx ', access_token);
+    console.log('refresh_token in search.jsx ', refresh_token);
+
+    setSpotifyToken(access_token);
+    setRefreshToken(refresh_token);
+
+    history.replaceState(null, '', '/')
+  }
+
+  useEffect(( )=> {
+    getHashParams();
+  }, [])
+ 
+
 
 
   useEffect(() => {
