@@ -15,8 +15,11 @@ const useStyles = makeStyles((theme) => ({
   root: {
     boxShadow: '0 3px 5px 2px rgba(0, 0, 0, 0.4) ',
     height: '100%',
+    // maxHeight: '800px',
     margin: 5,
     padding: 10,
+    backgroundColor: '#95d5b2',
+    overflow: 'scroll-y',
   },
   titleCard: {
     margin: 10,
@@ -37,7 +40,7 @@ const ConcertList = ({ playlistData , setTrack }) => {
   const classes = useStyles();
   
   return (
-    <Container className={classes.root}>
+    <Container className={classes.root} style={{ overflow: 'scroll-y' }}>
       <Card variant="outlined">
         <CardContent className={classes.titleCardContent}>
           <Box className={classes.titlecard}>

@@ -8,7 +8,8 @@ import {
   DrawerHeader,
   DrawerContent,
 } from '@chakra-ui/react';
-import { Box, Card, Grid } from '@material-ui/core';
+import { Box, Container, Grid, makeStyles } from '@material-ui/core';
+import { createTheme } from '@material-ui/core/styles';
 import { InfoOutlineIcon } from '@chakra-ui/icons';
 import FetchMapSearchResults from '../api/FetchMapSearchResults';
 import FetchPlaylist from '../api/FetchPlaylist';
@@ -24,6 +25,34 @@ import style from './Map.css'
 import VenueMap from './VenueMap'
 import ConcertList from './ConcertList'
 
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      light: '#757ce8',
+      main: '#3f50b5',
+      dark: '#002884',
+      contrastText: '#fff',
+    },
+    secondary: {
+      light: '#ff7961',
+      main: '#f44336',
+      dark: '#ba000d',
+      contrastText: '#000',
+    },
+  },
+});
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    boxShadow: '0 3px 5px 2px rgba(0, 0, 0, 0.4) ',
+    height: '100%',
+    margin: 5,
+    padding: 1,
+    
+  }
+}));
+
 const Search = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [search, setSearch] = useState('');
@@ -32,11 +61,38 @@ const Search = () => {
   const [playlistData, setPlaylistData] = useState([])
   const [concerts, setConcerts] = useState([])
   const [spotifyToken, setSpotifyToken] = useState('');
+  const [refreshToken, setRefreshToken] = useState('')
   const [loading, setLoading] = useState(false);
   const [track, setTrack] = useState(['spotify:track:4fSIb4hdOQ151TILNsSEaF']);
   const [placeDisplayType, setPlaceDisplayType] = useState('block')
+  const [mapZip, setMapZip] = useState('08901')
 
 
+  const classes = useStyles();
+
+  function getHashParams() {
+    const hashParams = {};
+    let e, r = /([^&;=]+)=?([^&;]*)/g,
+        q = window.location.hash.substring(1);
+    while ( e = r.exec(q)) {
+       hashParams[e[1]] = decodeURIComponent(e[2]);
+    }
+    let access_token = hashParams.access_token;
+    let refresh_token = hashParams.refresh_token;
+    
+    console.log('access_token in search.jsx ', access_token);
+    console.log('refresh_token in search.jsx ', refresh_token);
+
+    setSpotifyToken(access_token);
+    setRefreshToken(refresh_token);
+
+    history.replaceState(null, '', '/')
+  }
+
+  // useEffect(( )=> {
+  //   getHashParams();
+  // }, [])
+ 
   useEffect(() => {
     handleFetchSpotifyAccessToken();
   }, []);
@@ -49,7 +105,7 @@ const Search = () => {
     if (code) {
     const token = await FetchSpotifyAccessToken(code);
     setSpotifyToken(token);
-    setLoading(false)
+    setLoading(false);
     }
   };
   
@@ -60,13 +116,13 @@ const Search = () => {
   };
 
   const handlePlaylist = async (result) => {
-
+     
+    setMapZip(result.structured_formatting.main_text);
     const playlistConcert =  FetchPlaylist({ placeId: result.place_id })
     .then((data)=>{
-      console.log(data)
       setPlaylistData(data.playlist);
       setConcerts(data.concerts)
-    })
+    });
  
     const artistList = [];
     const showList = [];
@@ -84,11 +140,11 @@ const Search = () => {
     setTrack(trackList);
   };
   if (loading) return <p>Loading</p>
-searchResults && console.log('SEARCH RESULTS ', searchResults)
+
   return (
     <div>
-      <Grid container>
-      <Grid item xs={12}>
+      <Grid container color="primary">
+      <Grid item xs={12} color="primary">
       <div >
         <div className='title'>In The Loop ∞
         <InfoOutlineIcon 
@@ -110,10 +166,10 @@ searchResults && console.log('SEARCH RESULTS ', searchResults)
           bg="white"
           placeholder="Enter your Zip Code to hear artists playing near you"
           onChange={(e) => setSearch(e.target.value)}
-          onKeyDown={(e) => {
+          onKeyDown={async (e) => {
             if (e.key === 'Enter') {
               
-              setPlaceDisplayType('block')
+              await setPlaceDisplayType('block')
               handleSearchForLocation();
             }
           }}
@@ -127,11 +183,13 @@ searchResults && console.log('SEARCH RESULTS ', searchResults)
           <ConcertList playlistData={playlistData} setTrack={setTrack}/>
         </Grid>
         <Grid item xs={8}>
-      <VenueMap/>
+          <Container className={classes.root} color="primary">
+            <VenueMap search={search} mapZip={mapZip} />
+          </Container>
+          
+        </Grid>
       </Grid>
-      </Grid>
-      {/* <Map /> */}
-
+      
 
         <Drawer placement="right" onClose={onClose} isOpen={isOpen} w={'25%'}>
           <DrawerOverlay />

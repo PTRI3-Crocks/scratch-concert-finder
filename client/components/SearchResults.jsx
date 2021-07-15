@@ -3,10 +3,10 @@ import { background, Center } from '@chakra-ui/react';
 
 const SearchResults = ({ searchResults, handlePlaylist,placeDisplayType, setPlaceDisplayType}) => {
 
+  console.log(placeDisplayType, 'DISPLAY IN RESULTS')
   const style = {
     display:placeDisplayType,
-    // background: 'rgba(255, 255, 255, 0.6)'
-    
+    backgroundColor: 'd3d3d3'
   }
     
   
@@ -17,8 +17,8 @@ const SearchResults = ({ searchResults, handlePlaylist,placeDisplayType, setPlac
         <div
         style={style}
           onClick={() => { 
+            handlePlaylist(result)
             setPlaceDisplayType('none')
-            return handlePlaylist(result)
           }}
           key={i}
           id={result.place_id}

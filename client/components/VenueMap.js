@@ -3,7 +3,6 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
 import ReactMapGL, { NavigationControl } from 'react-map-gl';
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css';
-
 import 'mapbox-gl/dist/mapbox-gl.css';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
@@ -24,74 +23,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const VenueMap = () => {
+const VenueMap = ({ search, mapZip }) => {
+
   // set Markers state
-  // 190 E 72nd St APT 11B, New York, NY 10021
-  /** Marker data should look like this
-   * {
-    "properties": {
-      "Street address": "",
-      "City": "",
-      "State": "",
-      "Zip code": "",
-      "Address": "",
-      "Price": "",
-      "Interest rate": 0,
-      "Type": "",
-      "Size": "",
-      "# bedrooms": 0,
-      "# bathrooms": 0,
-      "Est. monthly mortgage": 0,
-      "Rent array": "",
-      "Est. monthly rent": "",
-      "Price-to-rent ratio": "",
-      "Rating": "",
-      "Image": "",
-      "ZPID": 0
-    },
-    "geometry": {
-      "coordinates": [
-        0,
-        0
-        
-      ],
-      "type": "Point"
-    }
-  }
-   */
+
   const [status, setStatus] = useState(null);
 
   const [markers, setMarkers] = useState({});
 
-  console.log('markers data ', markers);
-
   useEffect(() => {
     const defaultLocation = 'Mountain View, CA';
-    // const fetchMarkers = async () => {
-    //   // update API call status
-    //   setStatus('loading');
-    //   try {
-    //     const res = await axios(`/api/properties?location=${defaultLocation}`, {
-    //       method: 'POST',
-
-    //       headers: {
-    //         'Content-type': 'application/json',
-    //       },
-    //     });
-
-    //     const results = await res.json();
-    //     console.log('results ', results);
-    //     // update Markers state
-    //     setMarkers(results);
-    //     // update API call status
-    //     setStatus('done');
-    //   } catch (err) {
-    //     console.error(`fetchMarkers call failed ${err}`);
-    //     // update API call status
-    //     setStatus('error');
-    //   }
-    // };
-    // fetchMarkers();
+    
   }, []);
 
   const classes = useStyles('');
@@ -110,7 +52,35 @@ const VenueMap = () => {
     left: 0,
     padding: '10px',
   };
+  const zipConvert = async (zip) => {
+    await axios(
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${zip}&key=${process.env.GOOGLE_MAPS_API_KEY}`
+    ).then((data) => {
+      console.log('ZIP CONVERT', data);
 
+      handleViewportChange({
+        longitude: data?.data.results['0'].geometry.location.lng,
+        latitude: data?.data.results['0'].geometry.location.lat,
+        zoom: 12,
+        bearing: 0,
+        pitch: 0,
+      });
+
+      console.log(
+        'ZIP ',
+        data?.data.results['0'].geometry.location.lat,
+        data?.data.results['0'].geometry.location.lng
+      );
+    });
+  };
+  useEffect(() => {
+    mapZip && zipConvert(mapZip);
+  }, [mapZip]);
+  //   useEffect(() => {
+  //     search && zipConvert(search);
+  //   }, [search]);
+
+  //when click on location in search, set viewport.
   const [viewport, setViewport] = useState({
     // default location - NY,NY
     longitude: -73.9712,
@@ -120,7 +90,6 @@ const VenueMap = () => {
     pitch: 0,
   });
 
-  // console.log('viewport ###', viewport);
   const [addressCoordinates, setAddressCoordinates] = useState({
     longitude: 0,
     latitude: 0,
@@ -128,7 +97,7 @@ const VenueMap = () => {
   });
 
   const handleViewportChange = useCallback((newViewport) => {
-    //  console.log('handleViewportChange called ###', newViewport);
+    
     setViewport(newViewport);
     // save coordinate to reverse lookup address by coordinates
     setAddressCoordinates(newViewport);
@@ -159,7 +128,7 @@ const VenueMap = () => {
             {...mapStyle}
             onViewportChange={handleViewportChange}
           >
-            {/* <MarkersList props={markers} status={status} /> */}
+            
 
             <div style={navStyle}>
               <NavigationControl />
@@ -168,11 +137,11 @@ const VenueMap = () => {
         </Grid>
       </div>
       <div>
-        <Paper className={classes.paper}>
+        {/* <Paper className={classes.paper}>
           xs=12 lat: {viewport.latitude} <br />
           lng: {viewport.longitude} <br />
           zoom: {viewport.zoom}
-        </Paper>
+        </Paper> */}
       </div>
     </Container>
   );
