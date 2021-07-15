@@ -25,6 +25,22 @@ describe('Route integration', () => {
   })
 
   describe('POST /location-search', () => {
+     const searchResults = [
+       {
+         description: 'Mountain View, CA 94043, USA',
+         matched_substrings: [ [Object] ],
+         place_id: 'ChIJoQmen1G3j4ARbhoe7nVBEoQ',
+         reference: 'ChIJoQmen1G3j4ARbhoe7nVBEoQ',
+         structured_formatting: {
+           main_text: '94043',
+           main_text_matched_substrings: [Array],
+           secondary_text: 'Mountain View, CA, USA'
+         },
+         terms: [ [Object], [Object], [Object], [Object] ],
+         types: [ 'postal_code', 'geocode' ]
+       }
+     ]
+
     it('responds with location address', (done) => {
 
       // define the method to be intercepted
