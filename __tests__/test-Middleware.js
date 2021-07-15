@@ -9,6 +9,11 @@ chai.use(chaiHttp)
 const server = 'http://localhost:3000/api';
 
 describe('Route integration', () => {
+  let mockAPI;
+  beforeAll( () => {
+    // mock endpoint /location-search
+    mockAPI = nock(server)
+  })
   
   describe('/', () => {
     it('should return App object', () => {
@@ -22,14 +27,12 @@ describe('Route integration', () => {
   describe('POST /location-search', () => {
     it('responds with location address', (done) => {
 
-      // mock endpoint /location-search
-      nock(server)
-        // define the method to be intercepted
-        .post('/location-search')
-        // respond with ok and specified json response
-        .reply(200, {
-          "message":'mountain view'
-        });
+      // define the method to be intercepted
+      mockAPI.post('/location-search')
+      // respond with ok and specified json response
+      .reply(200, {
+        "message": 'mountain view'
+      });
       
       request(server)
         .post('/location-search')
@@ -42,5 +45,8 @@ describe('Route integration', () => {
         })
         .catch(err => done(err))
     })
+  })
+  afterAll( () => {
+    nock.cleanAll()
   })
 })
