@@ -35,9 +35,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 //click on list card, change color, press play button to play sample song, click find tickets opens new tab
 // for whatever ticket vendor, pin changes color on map to indicated the one selected on list.
-const ConcertList = ({ playlistData , setTrack }) => {
+const ConcertList = ({
+  playlistData,
+  setTrack,
+  setCardClicked,
+  cardClicked,
+}) => {
   const classes = useStyles();
-  
+  console.log('CARDCLICKED IN CONCERTLIST', setCardClicked);
+
   return (
     <Container className={classes.root} style={{ overflow: 'scroll-y' }}>
       <Card variant="outlined">
@@ -48,8 +54,15 @@ const ConcertList = ({ playlistData , setTrack }) => {
         </CardContent>
       </Card>
       <Divider />
-      {playlistData?.map((event, i) => (
-        <EventCard key={i} id={i} event={event} setTrack={setTrack} />
+      {playlistData?.map((event, idx) => (
+        <EventCard
+          key={idx}
+          idx={idx}
+          event={event}
+          setTrack={setTrack}
+          cardClicked={cardClicked}
+          setCardClicked={setCardClicked}
+        />
       ))}
     </Container>
   );

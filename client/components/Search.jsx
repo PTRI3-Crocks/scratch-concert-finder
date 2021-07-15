@@ -36,6 +36,7 @@ const Search = () => {
   const [track, setTrack] = useState(['spotify:track:4fSIb4hdOQ151TILNsSEaF']);
   const [placeDisplayType, setPlaceDisplayType] = useState('block')
   const [mapZip, setMapZip] = useState('08901')
+  const [cardClicked, setCardClicked] = useState(null)
 
 
   function getHashParams() {
@@ -91,7 +92,7 @@ const Search = () => {
   };
   
   const handleSearchForLocation = async () => {
-    search && console.log(search,'SEARCH CLICKED')
+    // search && console.log(search,'SEARCH CLICKED')
     const results = await FetchMapSearchResults({ searchQuery: search });
     setSearchResults(results);
   };
@@ -124,6 +125,7 @@ const Search = () => {
   };
   if (loading) return <p>Loading</p>
 searchResults && console.log('SEARCH RESULTS ', searchResults)
+playlistData && console.log('PLAYLIST DATA ', playlistData['0']?.location)
   return (
     <div>
       <Grid container>
@@ -163,10 +165,10 @@ searchResults && console.log('SEARCH RESULTS ', searchResults)
           </div>
         </Grid>
         <Grid item xs={4}>
-          <ConcertList playlistData={playlistData} setTrack={setTrack}/>
+          <ConcertList playlistData={playlistData} setTrack={setTrack} cardClicked={cardClicked} setCardClicked ={setCardClicked}/>
         </Grid>
         <Grid item xs={8}>
-      <VenueMap search={search} mapZip ={mapZip}/>
+      <VenueMap search={search} mapZip ={mapZip} playlistData={playlistData} cardClicked={cardClicked}/>
       </Grid>
       </Grid>
       {/* <Map /> */}

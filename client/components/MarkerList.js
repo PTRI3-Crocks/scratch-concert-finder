@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Marker } from 'react-map-gl';
 import Pin from './Pin';
-import MapModal from './components/MapModal';
-import api from './axios/axios';
+// import MapModal from './components/MapModal';
+import axios from 'axios';
 
-const MarkersList = ({ markers }) => {
-  console.log('props', markers);
+const MarkersList = ({ markers, status, cardClicked }) => {
+  console.log('MARKERS PLAYLIST DATA IN MARKERLIST', markers);
   let features = [];
   let singleLocation = {};
-  const { status } = props;
+  // const { status } = props;
   console.log('status ', status);
 
   // setup state to toggle Popupp
@@ -19,77 +19,46 @@ const MarkersList = ({ markers }) => {
   // const data = boiseList.propertiesForSale.features;
 
   const [showSingleLocation, setShowSingleLocation] = useState(false);
-  // use case - when it's a general area search
-  //e.g. Mountain View, CA
-  if (status === 'done') {
-    if (markers.propertiesForSale) {
-      features = markers.propertiesForSale.features;
-    }
-    // use case - when it's a speific location search
-    // 190 E 72nd St APT 11B, New York, NY 10021
-    // console.log('features ', features)
-    else if (props.props.targetForSale) {
-      singleLocation = props.props.targetForSale.features;
-      //  features = props.props.propertiesForRental.features
-      features = singleLocation;
-      //  setShowSingleLocation(true)
-      if (props.props.propertiesForRental) {
-        //  features.push(...props.props.propertiesForRental.features)
-        features = features.concat(props.props.propertiesForRental.features);
-      }
-    }
-  }
-
-  console.log('propertiesForRental ', props.props.propertiesForRental);
-  console.log('singleLocation ', singleLocation);
-  console.log('features ', features);
-  // const data = props.props.features;
-  // const data = boiseList.propertiesForSale.features;
-
-  //state to hold list of properties from initial area query
-  const [propList, setPropList] = useState(
-    boiseList.propertiesForSale.features
-  );
 
   //state to hold specific property details when map pin clicked
   //will be displayed on modal and saved to mongodb if fav added
   const [propDetail, setPropDetail] = useState({});
 
   //second api call to get rent data and rating on specific address
-  const getDetails = async (e, feature) => {
-    // console.log('DATA ', data);
-    console.log('clicked property');
-    console.log(feature);
-    if (props.props.propertiesForSale) {
-      const res = await api.post('/properties/target', null, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        params: {
-          location: feature['properties']['Address'],
-          home_type: feature['properties'].Type,
-          beds: feature['properties']['# bedrooms'],
-          baths: feature['properties']['# bathrooms'],
-          Price: feature['properties'].Price,
-          ZPID: feature['properties'].ZPID,
-        },
-      });
-      console.log(JSON.stringify(res.data.targetForSale, null, 2));
-      console.log(
-        Object.assign(
-          feature.properties,
-          res.data.targetForSale.features[0].properties
-        )
-      );
-      setPropDetail(feature);
-      console.log('PROP DETAIL', propDetail);
-      setMapModalOpen(true);
-    } else {
-      setPropDetail(feature);
-      setMapModalOpen(true);
-    }
-  };
+  // const getDetails = async (e, feature) => {
+  //   // console.log('DATA ', data);
+  //   console.log('clicked property');
+  //   console.log(feature);
+  //   if (props.props.propertiesForSale) {
+  //     const res = await api.post('/properties/target', null, {
+  //       headers: {
+  //         Accept: 'application/json',
+  //         'Content-Type': 'application/json',
+  //       },
+  //       params: {
+  //         location: feature['properties']['Address'],
+  //         home_type: feature['properties'].Type,
+  //         beds: feature['properties']['# bedrooms'],
+  //         baths: feature['properties']['# bathrooms'],
+  //         Price: feature['properties'].Price,
+  //         ZPID: feature['properties'].ZPID,
+  //       },
+  //     });
+  //     console.log(JSON.stringify(res.data.targetForSale, null, 2));
+  //     console.log(
+  //       Object.assign(
+  //         feature.properties,
+  //         res.data.targetForSale.features[0].properties
+  //       )
+  //     );
+  //     setPropDetail(feature);
+  //     console.log('PROP DETAIL', propDetail);
+  //     setMapModalOpen(true);
+  //   } else {
+  //     setPropDetail(feature);
+  //     setMapModalOpen(true);
+  //   }
+  // };
   //open/close handlers for add record modal
   const handleOpen = (e, idx) => {
     e.preventDefault();
@@ -108,22 +77,29 @@ const MarkersList = ({ markers }) => {
   let content;
 
   if (status === 'loading') {
-    content = <Spinner />;
+    // content = <Spinner />;
   } else if (status === 'done') {
-    content = features.map((marker, idx) => (
+    content = markers?.map((marker, idx) => (
       <Marker
+        {...console.log('IDX IN MARKER', cardClicked)}
         key={idx}
         id={idx}
-        longitude={marker.geometry.coordinates[0]}
-        latitude={marker.geometry.coordinates[1]}
+        longitude={marker.location['0']}
+        latitude={marker.location['1']}
+        // longitude={marker.geometry.coordinates[0]}
+        // latitude={marker.geometry.coordinates[1]}
         // onClick={() => handleMarkerClick(marker)}
         onClick={(e) => handleOpen(e, idx)}
       >
-        {/* <Pin size={idx === 0 ? 35 : 20} color={idx === 0 ? 'green' : 'red'} /> */}
+        {/* <Pin size={20} color={'red'} /> */}
         <Pin
+          size={idx === cardClicked ? 35 : 20}
+          color={idx === cardClicked ? 'green' : 'red'}
+        />
+        {/* <Pin
           color={props.props.targetForSale && idx === 0 ? 'green' : 'red'}
           size={props.props.targetForSale && idx === 0 ? 35 : 20}
-        />
+        /> */}
       </Marker>
     ));
   } else if (status === 'error') {
@@ -133,14 +109,14 @@ const MarkersList = ({ markers }) => {
   return (
     <div>
       {content}
-      {MapModalOpen && (
+      {/* {MapModalOpen && (
         <MapModal
           open={MapModalOpen}
           handleClose={handleClose}
           // propList={features}
           prop={propDetail}
         />
-      )}
+      )} */}
     </div>
   );
 };
