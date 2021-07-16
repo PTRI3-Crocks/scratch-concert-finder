@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { Center } from '@chakra-ui/react';
 
-const SearchResults = ({ searchResults, handlePlaylist,placeDisplayType, setPlaceDisplayType}) => {
+const SearchResults = ({ searchResults, handlePlaylist, placeDisplayType, setPlaceDisplayType, access_token }) => {
 
   const style = {
     display:placeDisplayType
@@ -14,7 +14,7 @@ const SearchResults = ({ searchResults, handlePlaylist,placeDisplayType, setPlac
         style={style}
           onClick={() => { 
             setPlaceDisplayType('none')
-            return handlePlaylist(result)
+            return handlePlaylist(result, access_token)
           }}
           key={i}
           id={result.place_id}

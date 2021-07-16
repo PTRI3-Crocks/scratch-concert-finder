@@ -73,15 +73,15 @@ spotifyAuthController.requestTokens = (req, res, next) => {
   };
 
   axios(authOptions)
-  .then(function(response) { console.log('this is the axios response: ', response);
+  .then(function(response) { console.log('this is the axios response: ', response.data);
     if (response.status === 200) {
       const access_token = response.data.access_token;
       const refresh_token = response.data.refresh_token;
+      const expires_in = response.data.expires_in;
 
       res.locals.access_token = access_token;
       res.locals.refresh_token = refresh_token;
-      console.log('access_token in spotifyAuthController.requestTokens: ', access_token);
-      console.log('access_token in spotifyAuthController.requestTokens: ', refresh_token);
+      res.locals.expires_in = expires_in;
         
       res.cookie('refresh_token', refresh_token, {maxAge: 2592000}); 
 
@@ -93,25 +93,6 @@ spotifyAuthController.requestTokens = (req, res, next) => {
    .catch((err) => console.log('Error in axios call in spotifyauthcontroller.requestToken, ', err));
 }
 
-// This middleware should get user data from spotify, access_token must be passed in on res.locals
-spotifyAuthController.getUserData = (req, res, next) => {
-  const { access_token } = res.locals;
-    // use the access token to access the Spotify Web API
-    const options = {
-      method: 'GET',
-      url: 'https://api.spotify.com/v1/me',
-      headers: { 'Authorization': 'Bearer ' + access_token },
-    };
-    // use the access token to access the Spotify Web API
-    axios(options)
-    .then((response) => {
-      // console.log('getUserData from Spotify response: ', response);
-      res.locals.user = response.data;
-      console.log('User data: ', res.locals.user);
-      return next();
-    })
-    .catch ((err) => console.log('This is an error in spotifyAuthController.getUserData, ', err));
-}
 
 // This controller uses the refresh token (stored in users cookies) to get a new access token
 spotifyAuthController.exchangeRefreshToken = (req, res, next) => {
@@ -130,11 +111,8 @@ spotifyAuthController.exchangeRefreshToken = (req, res, next) => {
     axios(options) 
       .then((response) => {
         if (response.statusCode === 200) {
-          const access_token = response.data.access_token;
           const refresh_token = response.data.refresh_token;
-          res.clearCookie('access_token');
           res.clearCookie('refresh_token');
-          res.cookie('access_token', access_token, {maxAge: 3600});
           res.cookie('refresh_token', refresh_token, {maxAge: 2592000}); 
         }
       })

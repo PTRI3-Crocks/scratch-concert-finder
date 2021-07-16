@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import SpotifyPlayer from 'react-spotify-web-playback';
 
-const Player = ({ spotifyToken, track, playlist }) => {
+const Player = ({ access_token, track, playlist }) => {
 
   const playerStyle = {
     activeColor: '#1cb954',
@@ -32,7 +32,7 @@ const Player = ({ spotifyToken, track, playlist }) => {
     
       <div className="spotify" style={style}>
       <SpotifyPlayer 
-          token={spotifyToken} 
+          token={access_token} 
           uris={track} 
           styles={playerStyle} 
           showSaveIcon={true}/>

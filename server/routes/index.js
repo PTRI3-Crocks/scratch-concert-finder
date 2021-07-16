@@ -18,6 +18,7 @@ router.get('/callback',
       querystring.stringify({
         access_token: res.locals.access_token,
         refresh_token: res.locals.refresh_token,
+        expires_in: res.locals.expires_in,
       })
     );
   }
@@ -30,8 +31,9 @@ router.get('/login',
     res.redirect(res.locals.authURL)
   });
 
-router.get('/user/:id', 
-  userController.sendUserDetails,
+router.get('/user/:access_token', 
+  // userController.sendUserDetails,
+  userController.getUserData,
   (req, res) => {
     res.status(200).json(res.locals.user);
   });
@@ -43,13 +45,28 @@ router.post('/location-search',
   }
 );
 
-router.post('/spotify-token', spotifyController.sendOAuthToken, (req, res) => {
-  return res.status(200).json(res.locals.token);
-});
+// router.post('/spotify-token', spotifyController.sendOAuthToken, (req, res) => {
+//   return res.status(200).json(res.locals.token);
+// });
 
 router.post('/playlist', spotifyController.sendPlaylist, (req, res) => {
   return res.status(200).json(res.locals);
   // return res.status(200).json(res.locals.playlist);
   //res.locals.concerts
 });
+
+router.get('/refresh-token',
+  spotifyAuthController.exchangeRefreshToken,
+  (req, res) => {
+    // TODO: Redirect is currently hardcoded. This should be updated to route to our homepage or search
+    res.redirect('http://localhost:8080#' +
+      querystring.stringify({
+        access_token: res.locals.access_token,
+        refresh_token: res.locals.refresh_token,
+        expires_in: res.locals.expires_in,
+      })
+    );
+  }
+)
+
 module.exports = router;

@@ -1,13 +1,13 @@
 const axios = require('axios');
 const config = require('../config');
 
-const spotifyArtistTopTracks = async ({ artistId, spotifyToken }) => {
+const spotifyArtistTopTracks = async ({ artistId, access_token }) => {
   try {
     const config = {
       method: 'get',
       url: `https://api.spotify.com/v1/artists/${artistId}/top-tracks?market=US`,
       headers: {
-        Authorization: `Bearer ${spotifyToken}`,
+        Authorization: `Bearer ${access_token}`,
       },
     };
     return await axios(config).then((response) =>

@@ -3,7 +3,7 @@ import { Avatar, Box, Button, Flex, List, Spinner, Text } from '@chakra-ui/react
 import FavoriteSong from './FavoriteSong';
 import FetchUserDetails from '../api/FetchUserDetails';
 
-const Profile = ({ spotifyToken }) => {
+const Profile = () => {
   // example to use env variables in React App
   console.log('SPOTIFY_CLIENT_ID ', process.env.SPOTIFY_CLIENT_ID)
   
@@ -15,18 +15,18 @@ const Profile = ({ spotifyToken }) => {
   const scope =
   encodeURIComponent('streaming user-read-email user-read-private user-read-playback-state user-modify-playback-state playlist-modify-private playlist-read-private user-library-modify user-library-read');
 
-  useEffect(() => {
-    handleFetchUser();
-  }, []);
+  // useEffect(() => {
+  //   handleFetchUser();
+  // }, []);
 
-  const handleFetchUser = async () => {
-    if (spotifyToken) {
-      setUser(await FetchUserDetails({ id: spotifyToken }));
-    }
-    setLoading(false);
-  };
+  // const handleFetchUser = async () => {
+  //   if (spotifyToken) {
+  //     setUser(await FetchUserDetails({ id: spotifyToken }));
+  //   }
+  //   setLoading(false);
+  // };
 
-  if (loading) return <Spinner />;
+  // if (loading) return <Spinner />;
 
   return (
     <Flex flexDirection="column" paddingLeft={10} paddingRight={10} h="100%" w="25%">
