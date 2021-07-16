@@ -40,7 +40,7 @@ const Search = () => {
   const [placeDisplayType, setPlaceDisplayType] = useState('block')
 
   // new state for tokens being returned from backend auth
-  // const [access_token, setAccess_token] = useState('');
+  const [access_token, setAccess_token] = useState('');
   const [refresh_token, setRefresh_token] = useState('')
   const [expires_in, setExpires_in] = useState('')
 
@@ -67,13 +67,13 @@ const Search = () => {
     }
   }
   
-  // const access_token = 'BQBNWPjZCr59LC_bYVs3CKT7ewczXQN5X0u3w8rQyXhn0vTjLTnjr9K7uO0U01TD5LdQcWrLhE3XcBwsSRamziM5_WrbjrJe8tdkbEiyP4OMqKH0AH1SyuHtk3VoqfyBCrUHHPPMagrk81j4weVxo-imSVBMDjSBfbp02J8nZBGaC_YGRk0FLYb5bq96Jrjk2J2aX-24VAITFEN6iq3jVhCveyTaUnh5I82XJpQ';
-  const access_token = '';
+  // const access_token: 'BQCH-66JEUSy81zh3Sn4Oy9mhopLP8I2zuNBlq5mBXfFuyIlUFq50M7-ZhEqnhBDEzYrn1LLkbeJsEfOYyBVuf284FIfIXZUAfzD9zr-7tlF8h_a8-y_Djtcfum7C9aq7sUoPFkN5wxyALxZS4wq8lsm8UQ6W-jN7HAvtclFDvyFSrQM7DPMJBEluh89GtvisMdq03X6-LXgZZLlUd4OCeLy0PqnxlCVye-WFTE';
+  // const access_token = '';
 
   /* This useEffect will invoke getHashParams*/
-  // useEffect(( )=> {
-  //   getHashParams();
-  // }, []);
+  useEffect(( )=> {
+    getHashParams();
+  }, []);
 
   // Get user details
   useEffect(async () => {
@@ -151,16 +151,8 @@ searchResults && console.log('SEARCH RESULTS ', searchResults)
       <Grid container>
       <Grid item xs={12}>
       <div >
-        { display_name 
-          ?  
-            <div>
-              Welcome, {display_name}
-            </div> 
-          :  
-          <a href={"api/login"}>Log In to Spotify</a>
-        }
         <div className='title'>In The Loop ∞
-        <InfoOutlineIcon 
+        {/*<InfoOutlineIcon 
         onClick={onOpen} 
         mt={2} 
         ml={5} 
@@ -169,7 +161,15 @@ searchResults && console.log('SEARCH RESULTS ', searchResults)
         cursor="pointer" 
         w={5} 
         h={5}
-        />
+        /> */}       
+        { display_name 
+          ?  
+            <span>
+              Welcome, {display_name}
+            </span> 
+          :  
+          <a href={"api/login"}>Log In to Spotify</a>
+        }
         </div>
         <div className="searchbar">
         <Input
