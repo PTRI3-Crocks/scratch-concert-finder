@@ -3,10 +3,10 @@ import { background, Center } from '@chakra-ui/react';
 
 const SearchResults = ({ searchResults, handlePlaylist,placeDisplayType, setPlaceDisplayType}) => {
 
-  console.log(placeDisplayType, 'DISPLAY IN RESULTS')
   const style = {
     display:placeDisplayType,
-    backgroundColor: 'd3d3d3'
+    backgroundColor: '457b9d',//'d3d3d3',
+    opacity: '0.75'
   }
     
   

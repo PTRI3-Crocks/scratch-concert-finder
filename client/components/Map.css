@@ -4,6 +4,7 @@ body {
   font-family: 'Work Sans';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size: clamp(1.4rem, -0.875rem + 4.6875vw, 2.5rem);
 }
 .overlay{
     z-index: 1;
@@ -17,13 +18,13 @@ body {
     left: 0
 }
 
-.title{
+/* .title{
     margin-top: 10px;
     margin-left: 40px;
     font-size: 24px;
     font-weight: 600;
     line-height: 1.5;
-}
+} */
 .header{
     background-color: black;
     /* opacity: .5; */
@@ -39,7 +40,7 @@ code {
   position:fixed;
   width: 47%;
   max-width:47%;
-  top: 85px;
+  top: 155px;
   left: 0px;
   /* padding-left:10px; */
   margin-top:10px;

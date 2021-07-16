@@ -44,10 +44,33 @@ const theme = createTheme({
 });
 
 const useStyles = makeStyles((theme) => ({
+  header:{
+    // boxShadow: '0 3px 5px 2px rgba(0, 0, 0, 0.4) ',
+    height: '100%',
+    backgroundColor:'#457b9d',
+    color:'#f1faee',
+    fontSize:'100%',
+    marginTop: '10px',
+    
+    
+  },
+  title:{
+    marginLeft: '40px',
+    fontSize:'120%',
+    fontWeight: '500'
+  },
+
+  mapContainer:{
+    boxShadow: '0 3px 5px 2px rgba(0, 0, 0, 0.4)',
+    height: '78vh',
+    backgroundColor:'#f1faee',
+    margin: 1,
+    padding: 1,
+  },
   root: {
     boxShadow: '0 3px 5px 2px rgba(0, 0, 0, 0.4) ',
     height: '100%',
-    margin: 5,
+    margin: 1,
     padding: 1,
     
   }
@@ -66,6 +89,7 @@ const Search = () => {
   const [track, setTrack] = useState(['spotify:track:4fSIb4hdOQ151TILNsSEaF']);
   const [placeDisplayType, setPlaceDisplayType] = useState('block')
   const [mapZip, setMapZip] = useState('08901')
+  const [cardClicked, setCardClicked] = useState(null)
 
 
   const classes = useStyles();
@@ -140,13 +164,12 @@ const Search = () => {
     setTrack(trackList);
   };
   if (loading) return <p>Loading</p>
-
   return (
     <div>
-      <Grid container color="primary">
-      <Grid item xs={12} color="primary">
-      <div >
-        <div className='title'>In The Loop ∞
+      <Grid container>
+      <Grid item xs={12} className={classes.header}>
+      <div>
+        <div className={classes.title}>In The Loop ∞
         <InfoOutlineIcon 
         onClick={onOpen} 
         mt={2} 
@@ -163,7 +186,9 @@ const Search = () => {
           mt={2}
           ml={10}
           mr={7}
-          bg="white"
+          bg="#f1faee"
+          color="#1d3557"
+          fontWeight="500"
           placeholder="Enter your Zip Code to hear artists playing near you"
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={async (e) => {
@@ -180,13 +205,24 @@ const Search = () => {
           </div>
         </Grid>
         <Grid item xs={4}>
-          <ConcertList playlistData={playlistData} setTrack={setTrack}/>
+          <ConcertList 
+            playlistData={playlistData} 
+            setTrack={setTrack} 
+            cardClicked={cardClicked} 
+            setCardClicked={setCardClicked}
+            />
         </Grid>
-        <Grid item xs={8}>
-          <Container className={classes.root} color="primary">
-            <VenueMap search={search} mapZip={mapZip} />
-          </Container>
-          
+        <Grid item xs={8} >
+        <Container 
+          className={classes.mapContainer}>
+          <VenueMap 
+            search={search} 
+            mapZip ={mapZip} 
+            playlistData={playlistData} 
+            cardClicked={cardClicked}
+            
+            />
+         </Container>   
         </Grid>
       </Grid>
       

@@ -3,9 +3,9 @@
   font-family: 'Work Sans', sans-serif;
 }
 
-/* p:hover{
-    border-bottom: 2px solid white;
-} */
+body {
+  font-size: large;
+}
 
 #slide {
     position: absolute;
@@ -187,9 +187,10 @@ color: var(--gray)
     left: 0;
     bottom: 0;
     width: 100%;
-   
-    color: black;
+    font-size: 50% ;
+    color: #f1faee;
     text-align: center;
+    background-color: #1d3557;
 }
 
 .footer-text{
