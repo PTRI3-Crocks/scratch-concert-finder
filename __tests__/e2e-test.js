@@ -10,6 +10,7 @@ describe('Front-end Integration/Features', () => {
     browser = await puppeteer.launch({
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     })
+    jest.setTimeout(10000) 
     page = await browser.newPage()
   })
 
@@ -17,10 +18,10 @@ describe('Front-end Integration/Features', () => {
     browser.close()
   })
 
-  describe('Initial Page loads', () => {
-    await page.goto(APP)
-    await page.waitForSelection('#root')
-    
-    await expect(page.title()).resolves.toMatch('In The Loop')
+  describe('Initial display', () => {
+    it('page loads successfully', async () => {
+      await page.goto(APP)
+      await expect(page.title()).resolves.toMatch('In The Loop')
+    })
   })
 })
