@@ -13,9 +13,9 @@ import { Box, Card, Grid } from '@material-ui/core';
 import { InfoOutlineIcon } from '@chakra-ui/icons';
 import FetchMapSearchResults from '../api/FetchMapSearchResults';
 import FetchPlaylist from '../api/FetchPlaylist';
-import Profile from '/client/components/Profile.jsx';
+// import Profile from '/client/components/Profile.jsx';
 // import FetchSpotifyAccessToken from '../api/FetchSpotifyAccessToken';
-import extractQueryParams from '../utils/extractQueryParams.js';
+// import extractQueryParams from '../utils/extractQueryParams.js';
 import Map from './Map';
 import Player from './Player';
 import PlayerBar from './PlayerBar';
@@ -23,7 +23,7 @@ import SearchResults from './SearchResults';
 import Footer from './Footer'
 import style from './Map.css'
 import VenueMap from './VenueMap'
-import ConcertList from './ConcertList'
+import ConcertList from './ConcertList';
 // import { ContactSupportOutlined } from '@material-ui/icons';
 // import { has } from 'lodash';
 import fetchUserDetails from '../api/FetchUserDetails';
@@ -168,7 +168,7 @@ searchResults && console.log('SEARCH RESULTS ', searchResults)
               Welcome, {display_name}
             </span> 
           :  
-          <a href={"api/login"}>Log In to Spotify</a>
+          <a href={"api/login"}>  Log In to Preview Artists</a>
         }
         </div>
         <div className="searchbar">
@@ -201,17 +201,17 @@ searchResults && console.log('SEARCH RESULTS ', searchResults)
       </Grid>
       {/* <Map /> */}
 
-
+      {/*}
         <Drawer placement="right" onClose={onClose} isOpen={isOpen} w={'25%'}>
           <DrawerOverlay />
           <DrawerContent>
             <DrawerHeader borderBottomWidth="1px">Your Profile</DrawerHeader>
             <DrawerBody>
-              {/*<Profile spotifyToken={spotifyToken} />*/}
+              <Profile spotifyToken={spotifyToken} />
               <Profile />
             </DrawerBody>
           </DrawerContent>
-        </Drawer>
+        </Drawer>*/}
         <div className="placesPanel">
           
           
