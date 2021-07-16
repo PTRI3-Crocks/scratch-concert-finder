@@ -34,7 +34,7 @@ const Search = () => {
   const [playlist, setPlaylist] = useState([]);
   const [playlistData, setPlaylistData] = useState([])
   const [concerts, setConcerts] = useState([])
-  const [spotifyToken, setSpotifyToken] = useState('');
+  // const [spotifyToken, setSpotifyToken] = useState('');
   const [loading, setLoading] = useState(false);
   const [track, setTrack] = useState(['spotify:track:4fSIb4hdOQ151TILNsSEaF']);
   const [placeDisplayType, setPlaceDisplayType] = useState('block')
@@ -61,15 +61,15 @@ const Search = () => {
         hashParams[e[1]] = decodeURIComponent(e[2]);
       }
       setAccess_token(hashParams.access_token);
-      // setSpotifyToken(hashParams.access_token);
       setRefresh_token(hashParams.refresh_token);
       setExpires_in(Date.now() + parseInt(hashParams.expires_in));
       history.replaceState(null, '', '/')
     }
   }
   
-  const access_token = 'BQDO1-A5RkMrSD7HkE3VVW8WhzuAch743QU5_chWMIEsj5vsY2C4LGCI0sBvl3hisxoWHZ0Jnc-uCMlLnSloGqU14nLBgBFErniYqc4vvbVCMbbKKEB7f8MOMEHPqlJQO9WnLPE3SMynWt3qP_VN556xRKhk9CT4O5rlwtzhwvLME7TjHRKgUhlkRAPZha7rb9CMOVlj5L6C2NqH4ly0OggPU3nJtE7dcRlY4ds'
-  
+  // const access_token = 'BQBNWPjZCr59LC_bYVs3CKT7ewczXQN5X0u3w8rQyXhn0vTjLTnjr9K7uO0U01TD5LdQcWrLhE3XcBwsSRamziM5_WrbjrJe8tdkbEiyP4OMqKH0AH1SyuHtk3VoqfyBCrUHHPPMagrk81j4weVxo-imSVBMDjSBfbp02J8nZBGaC_YGRk0FLYb5bq96Jrjk2J2aX-24VAITFEN6iq3jVhCveyTaUnh5I82XJpQ';
+  const access_token = '';
+
   /* This useEffect will invoke getHashParams*/
   // useEffect(( )=> {
   //   getHashParams();
@@ -79,7 +79,8 @@ const Search = () => {
   useEffect(async () => {
       const userDetails = await fetchUserDetails(access_token);
       setDisplay_name(userDetails.display_name);
-  }, []);
+      // TODO: Added the access_token dependency to try to trigger this. Untested
+  }, [access_token]);
  
   /* This will grab a new token if the current token is expired */
   // TODO: test this functionality
@@ -150,10 +151,13 @@ searchResults && console.log('SEARCH RESULTS ', searchResults)
       <Grid container>
       <Grid item xs={12}>
       <div >
-        { display_name &&
-        <div>
-          Welcome, {display_name}
-        </div>
+        { display_name 
+          ?  
+            <div>
+              Welcome, {display_name}
+            </div> 
+          :  
+          <a href={"api/login"}>Log In to Spotify</a>
         }
         <div className='title'>In The Loop ∞
         <InfoOutlineIcon 
@@ -222,13 +226,18 @@ searchResults && console.log('SEARCH RESULTS ', searchResults)
       )}
       
       </div>
-
-       <PlayerBar 
-          access_token={access_token} 
-          track={track} 
-          playlist={playlist}
-       />
-       
+      {access_token 
+        ? 
+          <PlayerBar 
+            access_token={access_token} 
+            track={track} 
+            playlist={playlist}
+          />
+        : 
+          <p>
+            Log in to listen to artists
+          </p>
+      }
       <Footer />
     </div>
   );

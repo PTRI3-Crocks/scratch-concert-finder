@@ -37,7 +37,6 @@ spotifyAuthController.getAuthURL = (req, res, next) => {
     redirect_uri: redirect_uri,
     state: state
   }))
-  console.log('inside spotifyAuthController, res.locals.authURL: ', res.locals.authURL)
   return next()
 }
 
@@ -90,7 +89,8 @@ spotifyAuthController.requestTokens = (req, res, next) => {
       console.log('This is the response error from spotify: ', response.data.error);
     }
   })   
-   .catch((err) => console.log('Error in axios call in spotifyauthcontroller.requestToken, ', err));
+
+  .catch((err) => console.log('Error in axios call in spotifyauthcontroller.requestToken, ', err));
 }
 
 
@@ -116,6 +116,7 @@ spotifyAuthController.exchangeRefreshToken = (req, res, next) => {
           res.cookie('refresh_token', refresh_token, {maxAge: 2592000}); 
         }
       })
+
     .catch((err) => {
       console.log("error in sporifyAuthController.exchangeRefreshToken, ", err)
     })
