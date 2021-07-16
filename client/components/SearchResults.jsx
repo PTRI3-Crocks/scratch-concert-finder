@@ -3,8 +3,10 @@ import { Center } from '@chakra-ui/react';
 
 const SearchResults = ({ searchResults, handlePlaylist, placeDisplayType, setPlaceDisplayType, access_token }) => {
 
+  console.log(placeDisplayType, 'DISPLAY IN RESULTS')
   const style = {
-    display:placeDisplayType
+    display:placeDisplayType,
+    backgroundColor: 'd3d3d3'
   }
   return (
   <div className="placePanel" style={{ cursor: 'pointer'}}>
@@ -13,6 +15,7 @@ const SearchResults = ({ searchResults, handlePlaylist, placeDisplayType, setPla
         <div
         style={style}
           onClick={() => { 
+            handlePlaylist(result)
             setPlaceDisplayType('none')
             return handlePlaylist(result, access_token)
           }}

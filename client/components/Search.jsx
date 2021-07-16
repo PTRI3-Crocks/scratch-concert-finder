@@ -38,6 +38,8 @@ const Search = () => {
   const [loading, setLoading] = useState(false);
   const [track, setTrack] = useState(['spotify:track:4fSIb4hdOQ151TILNsSEaF']);
   const [placeDisplayType, setPlaceDisplayType] = useState('block')
+  const [mapZip, setMapZip] = useState('08901')
+  const [cardClicked, setCardClicked] = useState(null)
 
   // new state for tokens being returned from backend auth
   const [access_token, setAccess_token] = useState('');
@@ -117,12 +119,16 @@ const Search = () => {
 // };
   
   const handleSearchForLocation = async () => {
+    // search && console.log(search,'SEARCH CLICKED')
     const results = await FetchMapSearchResults({ searchQuery: search });
     setSearchResults(results);
   };
 
   const handlePlaylist = async (result, access_token) => {
-    const playlistConcert = await FetchPlaylist({ placeId: result.place_id, access_token: access_token })
+     console.log('HANDLE PLAYLIST ',result.structured_formatting.main_text)
+     setMapZip(result.structured_formatting.main_text)
+    console.log('MAPZIP ',mapZip)
+    const playlistConcert =  FetchPlaylist({ placeId: result.place_id, access_token: access_token })
     .then((data)=>{
       console.log(data)
       setPlaylistData(data.playlist);
@@ -146,6 +152,7 @@ const Search = () => {
   };
   if (loading) return <p>Loading</p>
 searchResults && console.log('SEARCH RESULTS ', searchResults)
+playlistData && console.log('PLAYLIST DATA ', playlistData['0']?.location)
   return (
     <div>
       <Grid container>
@@ -179,10 +186,10 @@ searchResults && console.log('SEARCH RESULTS ', searchResults)
           bg="white"
           placeholder="Enter your Zip Code to hear artists playing near you"
           onChange={(e) => setSearch(e.target.value)}
-          onKeyDown={(e) => {
+          onKeyDown={async (e) => {
             if (e.key === 'Enter') {
               
-              setPlaceDisplayType('block')
+              await setPlaceDisplayType('block')
               handleSearchForLocation();
             }
           }}
@@ -193,10 +200,10 @@ searchResults && console.log('SEARCH RESULTS ', searchResults)
           </div>
         </Grid>
         <Grid item xs={4}>
-          <ConcertList playlistData={playlistData} setTrack={setTrack}/>
+          <ConcertList playlistData={playlistData} setTrack={setTrack} cardClicked={cardClicked} setCardClicked ={setCardClicked}/>
         </Grid>
         <Grid item xs={8}>
-      <VenueMap/>
+      <VenueMap search={search} mapZip ={mapZip} playlistData={playlistData} cardClicked={cardClicked}/>
       </Grid>
       </Grid>
       {/* <Map /> */}
