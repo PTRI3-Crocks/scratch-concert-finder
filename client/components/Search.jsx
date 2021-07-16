@@ -128,7 +128,7 @@ const Search = () => {
      console.log('HANDLE PLAYLIST ',result.structured_formatting.main_text)
      setMapZip(result.structured_formatting.main_text)
     console.log('MAPZIP ',mapZip)
-    const playlistConcert =  FetchPlaylist({ placeId: result.place_id, access_token: access_token })
+    const playlistConcert =  await FetchPlaylist({ placeId: result.place_id, access_token: access_token })
     .then((data)=>{
       console.log(data)
       setPlaylistData(data.playlist);
