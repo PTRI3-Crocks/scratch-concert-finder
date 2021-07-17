@@ -40,6 +40,8 @@ const ConcertList = ({
   setTrack,
   setCardClicked,
   cardClicked,
+  anchorEl,
+  setAnchorEl,
 }) => {
   const classes = useStyles();
   console.log('CARDCLICKED IN CONCERTLIST', setCardClicked);
@@ -62,6 +64,8 @@ const ConcertList = ({
           setTrack={setTrack}
           cardClicked={cardClicked}
           setCardClicked={setCardClicked}
+          anchorEl={anchorEl}
+          setAnchorEl={setAnchorEl}
         />
       ))}
     </Container>

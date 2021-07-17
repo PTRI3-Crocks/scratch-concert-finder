@@ -38,7 +38,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EventCard = ({ event, setTrack, idx, cardClicked, setCardClicked }) => {
+const EventCard = ({
+  event,
+  setTrack,
+  idx,
+  cardClicked,
+  setCardClicked,
+  anchorEl,
+  setAnchorEl,
+}) => {
   const d = new Date(event.start);
   const m = d.getUTCMonth();
   const date = d.getUTCDate();
@@ -50,8 +58,9 @@ const EventCard = ({ event, setTrack, idx, cardClicked, setCardClicked }) => {
       <Card
         variant="outlined"
         className={classes.titleCard}
-        onClick={() => {
+        onClick={(e) => {
           console.log('ID IN CARD ONLCIK', idx);
+          console.log('currentTarget', e.currentTarget);
           setCardClicked(idx);
         }}
       >

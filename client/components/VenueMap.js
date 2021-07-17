@@ -39,32 +39,6 @@ const VenueMap = ({ search, mapZip, playlistData, cardClicked }) => {
     setMarkers(playlistData);
     setStatus('done');
     console.log('USE EFFECT DONE', status);
-    const defaultLocation = 'Mountain View, CA';
-    // const fetchMarkers = async () => {
-    //   // update API call status
-    //   setStatus('loading');
-    //   try {
-    //     const res = await axios(`/api/properties?location=${defaultLocation}`, {
-    //       method: 'POST',
-
-    //       headers: {
-    //         'Content-type': 'application/json',
-    //       },
-    //     });
-
-    //     const results = await res.json();
-    //     console.log('results ', results);
-    //     // update Markers state
-    //     setMarkers(results);
-    //     // update API call status
-    //     setStatus('done');
-    //   } catch (err) {
-    //     console.error(`fetchMarkers call failed ${err}`);
-    //     // update API call status
-    //     setStatus('error');
-    //   }
-    // };
-    // fetchMarkers();
   }, [playlistData]);
 
   const classes = useStyles('');
@@ -92,7 +66,7 @@ const VenueMap = ({ search, mapZip, playlistData, cardClicked }) => {
       handleViewportChange({
         longitude: data?.data.results['0'].geometry.location.lng,
         latitude: data?.data.results['0'].geometry.location.lat,
-        zoom: 12,
+        zoom: 15,
         bearing: 0,
         pitch: 0,
       });
@@ -107,9 +81,6 @@ const VenueMap = ({ search, mapZip, playlistData, cardClicked }) => {
   useEffect(() => {
     mapZip && zipConvert(mapZip);
   }, [mapZip]);
-  //   useEffect(() => {
-  //     search && zipConvert(search);
-  //   }, [search]);
 
   //when click on location in search, set viewport.
   const [viewport, setViewport] = useState({
@@ -172,13 +143,6 @@ const VenueMap = ({ search, mapZip, playlistData, cardClicked }) => {
           </ReactMapGL>
         </Grid>
       </div>
-      {/* <div>
-        <Paper className={classes.paper}>
-          xs=12 lat: {viewport.latitude} <br />
-          lng: {viewport.longitude} <br />
-          zoom: {viewport.zoom}
-        </Paper>
-      </div> */}
     </Container>
   );
 };
