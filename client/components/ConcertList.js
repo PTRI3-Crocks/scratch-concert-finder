@@ -49,6 +49,8 @@ const ConcertList = ({
   setTrack,
   setCardClicked,
   cardClicked,
+  anchorEl,
+  setAnchorEl,
 }) => {
   const classes = useStyles();
 
@@ -71,6 +73,8 @@ const ConcertList = ({
           setTrack={setTrack}
           cardClicked={cardClicked}
           setCardClicked={setCardClicked}
+          anchorEl={anchorEl}
+          setAnchorEl={setAnchorEl}
         />
       ))}
     </Container>

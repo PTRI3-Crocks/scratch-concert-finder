@@ -85,6 +85,7 @@ const Search = () => {
   const [placeDisplayType, setPlaceDisplayType] = useState('block')
   const [mapZip, setMapZip] = useState('08901')
   const [cardClicked, setCardClicked] = useState(null)
+  const [anchorEl, setAnchorEl] = useState(null);
 
   // new state for tokens being returned from backend auth
   const [access_token, setAccess_token] = useState('');
