@@ -24,7 +24,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const VenueMap = ({ search, mapZip, playlistData, cardClicked }) => {
-  
   // set Markers state
 
   const [status, setStatus] = useState(null);
@@ -34,8 +33,9 @@ const VenueMap = ({ search, mapZip, playlistData, cardClicked }) => {
   useEffect(() => {
     setMarkers(playlistData);
     setStatus('done');
-    const defaultLocation = 'Mountain View, CA';
-    
+
+    console.log('USE EFFECT DONE', status);
+    console.log('playlistData', playlistData);
   }, [playlistData]);
 
   const classes = useStyles('');
@@ -58,24 +58,18 @@ const VenueMap = ({ search, mapZip, playlistData, cardClicked }) => {
     await axios(
       `https://maps.googleapis.com/maps/api/geocode/json?address=${zip}&key=${process.env.GOOGLE_MAPS_API_KEY}`
     ).then((data) => {
-      
       handleViewportChange({
         longitude: data?.data.results['0'].geometry.location.lng,
         latitude: data?.data.results['0'].geometry.location.lat,
-        zoom: 12,
+        zoom: 15,
         bearing: 0,
         pitch: 0,
       });
-
-      
     });
   };
   useEffect(() => {
     mapZip && zipConvert(mapZip);
   }, [mapZip]);
-  //   useEffect(() => {
-  //     search && zipConvert(search);
-  //   }, [search]);
 
   //when click on location in search, set viewport.
   const [viewport, setViewport] = useState({
@@ -94,7 +88,6 @@ const VenueMap = ({ search, mapZip, playlistData, cardClicked }) => {
   });
 
   const handleViewportChange = useCallback((newViewport) => {
-    
     setViewport(newViewport);
     // save coordinate to reverse lookup address by coordinates
     setAddressCoordinates(newViewport);
@@ -137,13 +130,6 @@ const VenueMap = ({ search, mapZip, playlistData, cardClicked }) => {
           </ReactMapGL>
         </Grid>
       </div>
-      {/* <div>
-        <Paper className={classes.paper}>
-          xs=12 lat: {viewport.latitude} <br />
-          lng: {viewport.longitude} <br />
-          zoom: {viewport.zoom}
-        </Paper>
-      </div> */}
     </Container>
   );
 };
