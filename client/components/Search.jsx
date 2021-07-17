@@ -120,7 +120,7 @@ const Search = () => {
     getHashParams();
   }, []);
 
-  // Get user details
+    // Get user details
   useEffect(async () => {
       const userDetails = await fetchUserDetails(access_token);
       setDisplay_name(userDetails.display_name);

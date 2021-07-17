@@ -45,10 +45,6 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 400,
     margin: '1%',
   },
-  grids: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   button: {
     fontSize: '60%',
     height: '2.1em',
@@ -67,8 +63,8 @@ const useStyles = makeStyles((theme) => ({
     height: '5em',
     width: '10em',
     position: 'relative',
-    left: '2%',
-    bottom: '-15%',
+    // left: '2%',
+    bottom: '-20%',
     '&:hover': {
       backgroundColor: '#a8dadc',
     },
@@ -118,17 +114,23 @@ const EventCard = ({
                 {event.venue}
               </Typography>
             </Grid>
-            <Grid item xs={4} className={classes.grids}>
-              <Fab
-                className={classes.button}
-                onClick={() => setTrack(event.track.uri)}
-              >
-                <PlayArrowIcon />
-              </Fab>
-              <Fab variant="extended" className={classes.tickets}>
-                <ConfirmationNumberIcon />
-                Find Tickets
-              </Fab>
+            <Grid item xs={3} 
+              className={classes.grids} 
+              justifyContent="center"
+              alignItems="center">
+                <Fab 
+                  className={classes.button} 
+                  onClick={() => setTrack(event.track.uri)}>
+                  <PlayArrowIcon />
+                </Fab>
+                <Fab 
+                  variant="extended" 
+                  className={classes.tickets}
+                  onClick={() => window.open(event.ticketsLink, "")}>
+                  <ConfirmationNumberIcon />
+                  Find Tickets
+                </Fab>
+              
             </Grid>
             <Grid item xs={12}></Grid>
           </Grid>

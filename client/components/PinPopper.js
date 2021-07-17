@@ -6,10 +6,11 @@ import PopperContent from './PopperContent';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    border: '1px solid',
+    border: 'none',
     padding: theme.spacing(1),
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: 'rgba(0,0,0,0)'//'#f1faee'//theme.palette.background.paper,
   },
+  
 }));
 
 export default function PinPopper({

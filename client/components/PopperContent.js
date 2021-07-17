@@ -60,7 +60,7 @@ export default function PopperContent({
         <Typography variant="body2" component="p" className={classes.details}>
           {markers[markerdex.props.id].venue}
         </Typography>
-        <Typography variant="body2" component="p">
+        <Typography variant="body2" component="p" className={classes.details}>
           {markers[markerdex.props.id].address}
         </Typography>
         <Typography className={classes.pos} color="textSecondary">
