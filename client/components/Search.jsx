@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import moment from 'moment';
 import {
   Input,
   useDisclosure,
@@ -8,13 +9,10 @@ import {
   DrawerHeader,
   DrawerContent,
 } from '@chakra-ui/react';
-import { Box, Card, Grid } from '@material-ui/core';
-import { InfoOutlineIcon } from '@chakra-ui/icons';
+import { Box, Container, Grid, makeStyles } from '@material-ui/core';
+import { createTheme } from '@material-ui/core/styles';
 import FetchMapSearchResults from '../api/FetchMapSearchResults';
 import FetchPlaylist from '../api/FetchPlaylist';
-import Profile from '/client/components/Profile.jsx';
-import FetchSpotifyAccessToken from '../api/FetchSpotifyAccessToken';
-import extractQueryParams from '../utils/extractQueryParams.js';
 import Map from './Map';
 import Player from './Player';
 import PlayerBar from './PlayerBar';
@@ -23,6 +21,58 @@ import Footer from './Footer'
 import style from './Map.css'
 import VenueMap from './VenueMap'
 import ConcertList from './ConcertList'
+import fetchUserDetails from '../api/FetchUserDetails';
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      light: '#757ce8',
+      main: '#3f50b5',
+      dark: '#002884',
+      contrastText: '#fff',
+    },
+    secondary: {
+      light: '#ff7961',
+      main: '#f44336',
+      dark: '#ba000d',
+      contrastText: '#000',
+    },
+  },
+});
+
+const useStyles = makeStyles((theme) => ({
+  header:{
+    // boxShadow: '0 3px 5px 2px rgba(0, 0, 0, 0.4) ',
+    height: '100%',
+    backgroundColor:'#457b9d',
+    color:'#f1faee',
+    fontSize:'100%',
+    marginTop: '10px',
+    
+    
+  },
+  title:{
+    marginLeft: '40px',
+    fontSize:'120%',
+    fontWeight: '500'
+  },
+
+  mapContainer:{
+    boxShadow: '0 3px 5px 2px rgba(0, 0, 0, 0.4)',
+    height: '82vh',
+    backgroundColor:'#f1faee',
+    margin: 1,
+    padding: 1,
+  },
+  root: {
+    boxShadow: '0 3px 5px 2px rgba(0, 0, 0, 0.4) ',
+    height: '100%',
+    margin: 1,
+    padding: 1,
+    
+  }
+}));
+
 const Search = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [search, setSearch] = useState('');
@@ -30,46 +80,60 @@ const Search = () => {
   const [playlist, setPlaylist] = useState([]);
   const [playlistData, setPlaylistData] = useState([])
   const [concerts, setConcerts] = useState([])
-  const [spotifyToken, setSpotifyToken] = useState('');
-  const [refreshToken, setRefreshToken] = useState('')
   const [loading, setLoading] = useState(false);
   const [track, setTrack] = useState(['spotify:track:4fSIb4hdOQ151TILNsSEaF']);
   const [placeDisplayType, setPlaceDisplayType] = useState('block')
   const [mapZip, setMapZip] = useState('08901')
   const [cardClicked, setCardClicked] = useState(null)
 
+  // new state for tokens being returned from backend auth
+  const [access_token, setAccess_token] = useState('');
+  const [refresh_token, setRefresh_token] = useState('')
+  const [expires_in, setExpires_in] = useState('')
 
+  // state for username
+  const [display_name, setDisplay_name] = useState('');
+
+  const classes = useStyles();
+  /* This function is used to parse the URL. When spotify athenticates a user or refreshes a token, an access_token, refresh_token
+  and expires_in are sent to the user in the URL. This function parses the URL, sets state to the returned values, and then removes
+  the URL with the user data from the browser and the browser history*/
   function getHashParams() {
-    const hashParams = {};
-    let e, r = /([^&;=]+)=?([^&;]*)/g,
-        q = window.location.hash.substring(1);
-    while ( e = r.exec(q)) {
-       hashParams[e[1]] = decodeURIComponent(e[2]);
+    // TODO: refactor if implementing refresh token
+    if (!access_token) {
+      const hashParams = {};
+      let e, r = /([^&;=]+)=?([^&;]*)/g,
+          q = window.location.hash.substring(1);
+      while ( e = r.exec(q)) {
+        hashParams[e[1]] = decodeURIComponent(e[2]);
+      }
+      setAccess_token(hashParams.access_token);
+      setRefresh_token(hashParams.refresh_token);
+      setExpires_in(Date.now() + parseInt(hashParams.expires_in));
+      history.replaceState(null, '', '/')
     }
-    let access_token = hashParams.access_token;
-    let refresh_token = hashParams.refresh_token;
-    
-    console.log('access_token in search.jsx ', access_token);
-    console.log('refresh_token in search.jsx ', refresh_token);
-
-    setSpotifyToken(access_token);
-    setRefreshToken(refresh_token);
-
-    history.replaceState(null, '', '/')
   }
-
+  
+  /* This useEffect will invoke getHashParams*/
   useEffect(( )=> {
     getHashParams();
-  }, [])
- 
-
-
-
-  useEffect(() => {
-    handleFetchSpotifyAccessToken();
   }, []);
 
-  // comment this in? Or, out?
+  // Get user details
+  useEffect(async () => {
+      const userDetails = await fetchUserDetails(access_token);
+      setDisplay_name(userDetails.display_name);
+  }, [access_token]);
+ 
+  /* This will grab a new token if the current token is expired */
+  // TODO: test this functionality
+  // useEffect(() => {
+  //   if (Date.now() > expires_in) {
+  //     fetchRefreshToken(refresh_token);
+  //   };
+  //    []});
+
+
   useEffect(() => {
     handleTrack();
   }, [playlist,playlistData]);
@@ -79,34 +143,19 @@ const Search = () => {
     console.log(track)
   };
   
-  const handleFetchSpotifyAccessToken = async () => {
-    const code = extractQueryParams('code');
-    // console.log('code in search.jsx: ', code);
-    // check to see if code exists in URL, if it does not, it will be null
-    if (code) {
-    const token = await FetchSpotifyAccessToken(code);
-    // console.log("Token: ", token);
-    setSpotifyToken(token);
-    setLoading(false)
-    }
-  };
-  
   const handleSearchForLocation = async () => {
-    // search && console.log(search,'SEARCH CLICKED')
     const results = await FetchMapSearchResults({ searchQuery: search });
     setSearchResults(results);
+    setSearch('');
   };
 
-  const handlePlaylist = async (result) => {
-     console.log('HANDLE PLAYLIST ',result.structured_formatting.main_text)
+  const handlePlaylist = async (result, access_token) => {
      setMapZip(result.structured_formatting.main_text)
-    console.log('MAPZIP ',mapZip)
-    const playlistConcert =  FetchPlaylist({ placeId: result.place_id })
+    const playlistConcert =  await FetchPlaylist({ placeId: result.place_id, access_token: access_token })
     .then((data)=>{
-      console.log(data)
       setPlaylistData(data.playlist);
       setConcerts(data.concerts)
-    })
+    });
  
     const artistList = [];
     const showList = [];
@@ -124,31 +173,29 @@ const Search = () => {
     setTrack(trackList);
   };
   if (loading) return <p>Loading</p>
-searchResults && console.log('SEARCH RESULTS ', searchResults)
-playlistData && console.log('PLAYLIST DATA ', playlistData['0']?.location)
   return (
     <div>
       <Grid container>
-      <Grid item xs={12}>
+      <Grid item xs={12} className={classes.header}>
       <div >
-        <div className='title'>In The Loop ∞
-        <InfoOutlineIcon 
-        onClick={onOpen} 
-        mt={2} 
-        ml={5} 
-        mr={5}
-        mb={2} 
-        cursor="pointer" 
-        w={5} 
-        h={5}
-        />
+        <div className='title'>In The Loop ∞      
+        { display_name 
+          ?  
+            <span>
+              Welcome, {display_name}
+            </span> 
+          :  
+          <a href={"api/login"} className='login'>Log In</a>
+        }
         </div>
         <div className="searchbar">
         <Input
           mt={2}
           ml={10}
           mr={7}
-          bg="white"
+          bg="#f1faee"
+          color="#1d3557"
+          fontWeight="500"
           placeholder="Enter your Zip Code to hear artists playing near you"
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={async (e) => {
@@ -165,29 +212,34 @@ playlistData && console.log('PLAYLIST DATA ', playlistData['0']?.location)
           </div>
         </Grid>
         <Grid item xs={4}>
-          <ConcertList playlistData={playlistData} setTrack={setTrack} cardClicked={cardClicked} setCardClicked ={setCardClicked}/>
+          <ConcertList 
+            playlistData={playlistData} 
+            setTrack={setTrack} 
+            cardClicked={cardClicked} 
+            setCardClicked={setCardClicked}
+            />
         </Grid>
-        <Grid item xs={8}>
-      <VenueMap search={search} mapZip ={mapZip} playlistData={playlistData} cardClicked={cardClicked}/>
-      </Grid>
+        <Grid item xs={8} >
+        <Container 
+          className={classes.mapContainer}>
+          <VenueMap 
+            search={search} 
+            mapZip ={mapZip} 
+            playlistData={playlistData} 
+            cardClicked={cardClicked}
+            
+            />
+         </Container>   
+        </Grid>
       </Grid>
       {/* <Map /> */}
 
-
-        <Drawer placement="right" onClose={onClose} isOpen={isOpen} w={'25%'}>
-          <DrawerOverlay />
-          <DrawerContent>
-            <DrawerHeader borderBottomWidth="1px">Your Profile</DrawerHeader>
-            <DrawerBody>
-              <Profile spotifyToken={spotifyToken} />
-            </DrawerBody>
-          </DrawerContent>
-        </Drawer>
         <div className="placesPanel">
           
           
-      {searchResults.length > 0 && playlist.length === 0 && (
-        <SearchResults 
+      {searchResults.length > 0 && (
+        <SearchResults
+          access_token={access_token}
           searchResults={searchResults} 
           handlePlaylist={handlePlaylist} 
           placeDisplayType={placeDisplayType}  
@@ -196,13 +248,18 @@ playlistData && console.log('PLAYLIST DATA ', playlistData['0']?.location)
       )}
       
       </div>
-       {spotifyToken !== '' && 
-       <PlayerBar 
-          spotifyToken={spotifyToken} 
-          track={track} 
-          playlist={playlist}
-       />}
-       
+      {access_token 
+        ? 
+          <PlayerBar 
+            access_token={access_token} 
+            track={track} 
+            playlist={playlist}
+          />
+        : 
+          <p>
+            Log in to listen to artists
+          </p>
+      }
       <Footer />
     </div>
   );
