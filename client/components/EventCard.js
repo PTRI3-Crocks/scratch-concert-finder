@@ -15,17 +15,16 @@ const useStyles = makeStyles((theme) => ({
   root: {
     boxShadow: '0 3px 5px 2px rgba(0, 0, 0, 0.4) ',
     height: '100%',
-    // maxHeight: '800px',
     margin: 5,
     padding: 10,
     overflow: 'scroll-y',
   },
   titleCard: {
-    backgroundColor: '#f1faee', //'rgb(94, 96, 206,0.42)',
+    backgroundColor: '#f1faee', 
     boxShadow: '0 2px 4px 1px rgba(0, 0, 0, 0.4) ',
     margin: 10,
     '&:hover': {
-      backgroundColor: '457b9d'//'rgb(72, 191, 227, 0.42)',
+      backgroundColor: '457b9d'
     },
   },
   titleCardContent: {
@@ -44,33 +43,36 @@ const useStyles = makeStyles((theme) => ({
   info: {
     fontSize: '60%',
     fontWeight: 400,
+    margin:'1%'
   },
   grids:{
     alignItems: 'center',
     justifyContent: 'center',
   },
-  // button: {
-  //   fontSize: '60%',
-  //   height:'2em',
-  //   width: '2em',
-  //   alignItems  : 'center',
-  //   justifyContent: 'center',
-  //   // backgroundColor: '#a8dadc',
-  //   '&:hover': {
-  //     backgroundColor: '#a8dadc'
-  //   },
-  // },
-  // tickets: {
-  //   fontSize: '30%',
-  //   height:'3em',
-  //   width: '4em',
-  //   alignContent: 'space-evenly',
-  //   justifyContent: 'space-evenly',
-  //   // backgroundColor: '#a8dadc',
-  //   '&:hover': {
-  //     backgroundColor: '#a8dadc'
-  //   },
-  // },
+  button: {
+    fontSize: '60%',
+    height:'2.1em',
+    width: '2.1em',
+    alignItems  : 'center',
+    justifyContent: 'center',
+    position: 'relative',
+    left: '23%',
+    top: '0%',
+    '&:hover': {
+      backgroundColor: '#a8dadc'
+    },
+  },
+  tickets: {
+    fontSize: '27%',
+    height:'5em',
+    width: '10em',
+    position: 'relative',
+    left: '2%',
+    bottom: '-15%',
+    '&:hover': {
+      backgroundColor: '#a8dadc'
+    },
+  },
 }));
 
 const EventCard = ({ event, setTrack, idx, cardClicked, setCardClicked }) => {
@@ -121,10 +123,7 @@ const EventCard = ({ event, setTrack, idx, cardClicked, setCardClicked }) => {
               </Fab>
             </Grid>
             <Grid item xs={12}>
-              <Fab variant="extended" className={classes.tickets}>
-                <ConfirmationNumberIcon />
-                Find Tickets
-              </Fab>
+             
             </Grid>
           </Grid>
         </CardContent>

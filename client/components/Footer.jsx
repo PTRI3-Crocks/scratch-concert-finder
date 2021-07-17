@@ -8,7 +8,7 @@ const Footer = () => (
   <div className="footer">
     <Box  role="contentinfo" mx="auto" w={'100%'} h={8}>
       <Stack>
-        <div className="footer-text">Copyright 2021 Tassled Wobbegong</div>
+        <div className="footer-text">Copyright 2021 Crocks</div>
       </Stack>
     </Box>
   </div>

@@ -5,7 +5,7 @@ const SearchResults = ({ searchResults, handlePlaylist,placeDisplayType, setPlac
 
   const style = {
     display:placeDisplayType,
-    backgroundColor: '457b9d',//'d3d3d3',
+    backgroundColor: '457b9d',
     opacity: '0.75'
   }
     
@@ -22,7 +22,6 @@ const SearchResults = ({ searchResults, handlePlaylist,placeDisplayType, setPlac
           }}
           key={i}
           id={result.place_id}
-          // style={{ marginTop: '2em' }}
           className="place-item"
         >
           {result.description}

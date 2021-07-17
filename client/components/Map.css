@@ -40,7 +40,7 @@ code {
   position:fixed;
   width: 47%;
   max-width:47%;
-  top: 155px;
+  top: 15%;
   left: 0px;
   /* padding-left:10px; */
   margin-top:10px;
@@ -58,11 +58,9 @@ code {
     margin-top:10px
    
 }
-/* .place-item{
-    padding-left: 40px;
-} */
+
 p{
-    /* position: fixed; */
+    
     background-color: rgba(255, 255, 255, 0.5);
     color: black;
     font-weight: 600;
@@ -71,7 +69,7 @@ p{
     z-index: 1;
 }
 .searchbar{
-  /* margin-top: 20px; */
+  
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -81,8 +79,8 @@ p{
 .place-item {
   background-color: rgba(255, 255, 255, 0.5);
   padding: 10px 10px 10px 10px;
-  font-size: 24px;
-  color: black;
+  font-size: 80%;
+  color: #101e31;
   cursor: pointer;
   width: 100%;
   /* max-width:47%; */
@@ -90,7 +88,7 @@ p{
 
 .place-item:hover{
   background-color: blue;
-  color: white
+  color: #f1faee
 }
 
 .searchResults {  background-color: rgba(255, 255, 255, 0.5);

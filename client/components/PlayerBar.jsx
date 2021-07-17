@@ -6,9 +6,9 @@ const Player = ({ spotifyToken, track, playlist }) => {
   const playerStyle = {
     activeColor: '#e63946',
     bgColor: '#333',
-    color: '#f1faee', //'#fff',
+    color: '#f1faee', 
     loaderColor: '#fff',
-    sliderColor: '#e63946',//'#1cb954',
+    sliderColor: '#e63946',
     trackArtistColor: '#333',
     trackNameColor: '#333',
     altColor: '#e63946',

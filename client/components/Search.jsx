@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
 
   mapContainer:{
     boxShadow: '0 3px 5px 2px rgba(0, 0, 0, 0.4)',
-    height: '78vh',
+    height: '82vh',
     backgroundColor:'#f1faee',
     margin: 1,
     padding: 1,
