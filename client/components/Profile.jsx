@@ -4,12 +4,7 @@ import FavoriteSong from './FavoriteSong';
 import FetchUserDetails from '../api/FetchUserDetails';
 
 const Profile = ({ spotifyToken }) => {
-  // example to use env variables in React App
-  console.log('SPOTIFY_CLIENT_ID ', process.env.SPOTIFY_CLIENT_ID)
-  
-  //destructring does not work
-  // const { spotifyClientId } = process.env.SPOTIFY_CLIENT_ID 
-
+ 
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(true);
   const scope =
