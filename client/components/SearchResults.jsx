@@ -15,7 +15,7 @@ const SearchResults = ({ searchResults, handlePlaylist, placeDisplayType, setPla
         <div
         style={style}
           onClick={() => { 
-            handlePlaylist(result)
+            handlePlaylist(result, access_token)
             setPlaceDisplayType('none')
             return handlePlaylist(result, access_token)
           }}

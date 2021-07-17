@@ -5,10 +5,6 @@ const userController = require('../controllers/userController');
 const spotifyAuthController = require('../controllers/spotifyAuthController')
 const querystring = require('querystring');
 
-// router.post('/signup', controllers.createUser);
-// router.post('/token', controllers.handleToken);
-// router.post('/login', controllers.verifyUser);
-
 // This route handles the second step in the Spotify Authorization Process, and intercepts a call from Spotify as specified in the Spotify For Developers App dashboard
 router.get('/callback', 
   spotifyAuthController.requestTokens,
@@ -44,10 +40,6 @@ router.post('/location-search',
     res.status(200).json(res.locals.searchResults);
   }
 );
-
-// router.post('/spotify-token', spotifyController.sendOAuthToken, (req, res) => {
-//   return res.status(200).json(res.locals.token);
-// });
 
 router.post('/playlist', spotifyController.sendPlaylist, (req, res) => {
   return res.status(200).json(res.locals);

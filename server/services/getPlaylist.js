@@ -19,14 +19,12 @@ const getPlaylist = async ({ placeId, access_token }) => {
         const artistSearchResults = await spotifyArtistSearch({
           title: titleScrubbed,
           access_token: access_token,
-          // spotifyToken,
         });
         if (!artistSearchResults || artistSearchResults.length === 0) return;
         const artist = artistSearchResults[0];
         const topTracks = await spotifyArtistTopTracks({
           artistId: artist.id,
           access_token: access_token,
-          // spotifyToken,
         });
         if (!topTracks || topTracks.length === 0) return;
         const tracksToAddtoPlaylist =

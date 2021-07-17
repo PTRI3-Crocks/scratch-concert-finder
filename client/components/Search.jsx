@@ -13,9 +13,6 @@ import { Box, Card, Grid } from '@material-ui/core';
 import { InfoOutlineIcon } from '@chakra-ui/icons';
 import FetchMapSearchResults from '../api/FetchMapSearchResults';
 import FetchPlaylist from '../api/FetchPlaylist';
-// import Profile from '/client/components/Profile.jsx';
-// import FetchSpotifyAccessToken from '../api/FetchSpotifyAccessToken';
-// import extractQueryParams from '../utils/extractQueryParams.js';
 import Map from './Map';
 import Player from './Player';
 import PlayerBar from './PlayerBar';
@@ -24,8 +21,6 @@ import Footer from './Footer'
 import style from './Map.css'
 import VenueMap from './VenueMap'
 import ConcertList from './ConcertList';
-// import { ContactSupportOutlined } from '@material-ui/icons';
-// import { has } from 'lodash';
 import fetchUserDetails from '../api/FetchUserDetails';
 const Search = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -34,7 +29,6 @@ const Search = () => {
   const [playlist, setPlaylist] = useState([]);
   const [playlistData, setPlaylistData] = useState([])
   const [concerts, setConcerts] = useState([])
-  // const [spotifyToken, setSpotifyToken] = useState('');
   const [loading, setLoading] = useState(false);
   const [track, setTrack] = useState(['spotify:track:4fSIb4hdOQ151TILNsSEaF']);
   const [placeDisplayType, setPlaceDisplayType] = useState('block')
@@ -53,7 +47,6 @@ const Search = () => {
   and expires_in are sent to the user in the URL. This function parses the URL, sets state to the returned values, and then removes
   the URL with the user data from the browser and the browser history*/
   function getHashParams() {
-    // added this conditional to prevent possible render wiping the existing access_token state. 
     // TODO: refactor if implementing refresh token
     if (!access_token) {
       const hashParams = {};
@@ -69,9 +62,6 @@ const Search = () => {
     }
   }
   
-  // const access_token: 'BQCH-66JEUSy81zh3Sn4Oy9mhopLP8I2zuNBlq5mBXfFuyIlUFq50M7-ZhEqnhBDEzYrn1LLkbeJsEfOYyBVuf284FIfIXZUAfzD9zr-7tlF8h_a8-y_Djtcfum7C9aq7sUoPFkN5wxyALxZS4wq8lsm8UQ6W-jN7HAvtclFDvyFSrQM7DPMJBEluh89GtvisMdq03X6-LXgZZLlUd4OCeLy0PqnxlCVye-WFTE';
-  // const access_token = '';
-
   /* This useEffect will invoke getHashParams*/
   useEffect(( )=> {
     getHashParams();
@@ -81,7 +71,6 @@ const Search = () => {
   useEffect(async () => {
       const userDetails = await fetchUserDetails(access_token);
       setDisplay_name(userDetails.display_name);
-      // TODO: Added the access_token dependency to try to trigger this. Untested
   }, [access_token]);
  
   /* This will grab a new token if the current token is expired */
@@ -92,11 +81,7 @@ const Search = () => {
   //   };
   //    []});
 
-  // useEffect(() => {
-  //   handleFetchSpotifyAccessToken();
-  // }, []);
 
-  // comment this in? Or, out?
   useEffect(() => {
     handleTrack();
   }, [playlist,playlistData]);
@@ -105,18 +90,6 @@ const Search = () => {
     if(playlist[0]) setTrack(track);
     console.log(track)
   };
-  
-// const handleFetchSpotifyAccessToken = async () => {
-//   const code = extractQueryParams('code');
-//   // console.log('code in search.jsx: ', code);
-//   // check to see if code exists in URL, if it does not, it will be null
-//   if (code) {
-//   const token = await FetchSpotifyAccessToken(code);
-//   // console.log("Token: ", token);
-//   setSpotifyToken(token);
-//   setLoading(false)
-//   }
-// };
   
   const handleSearchForLocation = async () => {
     // search && console.log(search,'SEARCH CLICKED')
@@ -158,17 +131,7 @@ playlistData && console.log('PLAYLIST DATA ', playlistData['0']?.location)
       <Grid container>
       <Grid item xs={12}>
       <div >
-        <div className='title'>In The Loop ∞
-        {/*<InfoOutlineIcon 
-        onClick={onOpen} 
-        mt={2} 
-        ml={5} 
-        mr={5}
-        mb={2} 
-        cursor="pointer" 
-        w={5} 
-        h={5}
-        /> */}       
+        <div className='title'>In The Loop ∞      
         { display_name 
           ?  
             <span>
@@ -208,17 +171,6 @@ playlistData && console.log('PLAYLIST DATA ', playlistData['0']?.location)
       </Grid>
       {/* <Map /> */}
 
-      {/*}
-        <Drawer placement="right" onClose={onClose} isOpen={isOpen} w={'25%'}>
-          <DrawerOverlay />
-          <DrawerContent>
-            <DrawerHeader borderBottomWidth="1px">Your Profile</DrawerHeader>
-            <DrawerBody>
-              <Profile spotifyToken={spotifyToken} />
-              <Profile />
-            </DrawerBody>
-          </DrawerContent>
-        </Drawer>*/}
         <div className="placesPanel">
           
           

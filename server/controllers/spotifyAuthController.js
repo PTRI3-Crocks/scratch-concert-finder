@@ -1,5 +1,4 @@
 const { default: axios } = require('axios');
-const { access } = require('fs');
 const querystring = require('querystring');
 
 
@@ -95,6 +94,7 @@ spotifyAuthController.requestTokens = (req, res, next) => {
 
 
 // This controller uses the refresh token (stored in users cookies) to get a new access token
+// TODO: Test and implement
 spotifyAuthController.exchangeRefreshToken = (req, res, next) => {
   // check if req.cookies.refresh_token exists, and if it does invoke this code
     const refresh_token = req.query.refresh_token;
