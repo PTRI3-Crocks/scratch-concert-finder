@@ -5,8 +5,7 @@ const SearchResults = ({ searchResults, handlePlaylist,placeDisplayType, setPlac
 
   const style = {
     display:placeDisplayType,
-    backgroundColor: '457b9d',
-    opacity: '0.75'
+    backgroundColor: 'rgba(69, 123, 157, .7)',
   }
     
   
