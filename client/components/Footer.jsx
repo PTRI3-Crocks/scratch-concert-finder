@@ -6,9 +6,9 @@ import {
 
 const Footer = () => (
   <div className="footer">
-    <Box  role="contentinfo" mx="auto" w={'100%'} h={8}>
+    <Box bg={'white'} role="contentinfo" mx="auto" w={'100%'} h={8}>
       <Stack>
-        <div className="footer-text">Copyright 2021 Crocks</div>
+        <div className="footer-text">Copyright 2021 Tassled Wobbegong</div>
       </Stack>
     </Box>
   </div>

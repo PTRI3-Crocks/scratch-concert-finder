@@ -3,9 +3,9 @@
   font-family: 'Work Sans', sans-serif;
 }
 
-body {
-  font-size: large;
-}
+/* p:hover{
+    border-bottom: 2px solid white;
+} */
 
 #slide {
     position: absolute;
@@ -28,10 +28,6 @@ body {
   
   .spotify{
       width: 33%
-  }
-
-  .place-item:hover{
-   background: rgba(255, 255, 255, 0.8)
   }
 
 @-webkit-keyframes slide {
@@ -187,10 +183,9 @@ color: var(--gray)
     left: 0;
     bottom: 0;
     width: 100%;
-    font-size: 50% ;
-    color: #f1faee;
+   
+    color: black;
     text-align: center;
-    background-color: #1d3557;
 }
 
 .footer-text{

@@ -3,6 +3,7 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
 import ReactMapGL, { NavigationControl } from 'react-map-gl';
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css';
+
 import 'mapbox-gl/dist/mapbox-gl.css';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
@@ -24,18 +25,46 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const VenueMap = ({ search, mapZip, playlistData, cardClicked }) => {
-  
+  search && console.log('SEARCH IN VENUE ', search);
+  playlistData && console.log('PLAYLIST DATA IN VENUEMAP ', playlistData);
   // set Markers state
 
   const [status, setStatus] = useState(null);
 
   const [markers, setMarkers] = useState({});
 
+  console.log('markers data ', markers);
+
   useEffect(() => {
     setMarkers(playlistData);
     setStatus('done');
+    console.log('USE EFFECT DONE', status);
     const defaultLocation = 'Mountain View, CA';
-    
+    // const fetchMarkers = async () => {
+    //   // update API call status
+    //   setStatus('loading');
+    //   try {
+    //     const res = await axios(`/api/properties?location=${defaultLocation}`, {
+    //       method: 'POST',
+
+    //       headers: {
+    //         'Content-type': 'application/json',
+    //       },
+    //     });
+
+    //     const results = await res.json();
+    //     console.log('results ', results);
+    //     // update Markers state
+    //     setMarkers(results);
+    //     // update API call status
+    //     setStatus('done');
+    //   } catch (err) {
+    //     console.error(`fetchMarkers call failed ${err}`);
+    //     // update API call status
+    //     setStatus('error');
+    //   }
+    // };
+    // fetchMarkers();
   }, [playlistData]);
 
   const classes = useStyles('');
@@ -58,7 +87,8 @@ const VenueMap = ({ search, mapZip, playlistData, cardClicked }) => {
     await axios(
       `https://maps.googleapis.com/maps/api/geocode/json?address=${zip}&key=${process.env.GOOGLE_MAPS_API_KEY}`
     ).then((data) => {
-      
+      //   console.log('ZIP CONVERT', data);
+
       handleViewportChange({
         longitude: data?.data.results['0'].geometry.location.lng,
         latitude: data?.data.results['0'].geometry.location.lat,
@@ -67,7 +97,11 @@ const VenueMap = ({ search, mapZip, playlistData, cardClicked }) => {
         pitch: 0,
       });
 
-      
+      console.log(
+        'ZIP ',
+        data?.data.results['0'].geometry.location.lat,
+        data?.data.results['0'].geometry.location.lng
+      );
     });
   };
   useEffect(() => {
@@ -87,6 +121,7 @@ const VenueMap = ({ search, mapZip, playlistData, cardClicked }) => {
     pitch: 0,
   });
 
+  // console.log('viewport ###', viewport);
   const [addressCoordinates, setAddressCoordinates] = useState({
     longitude: 0,
     latitude: 0,
@@ -94,7 +129,7 @@ const VenueMap = ({ search, mapZip, playlistData, cardClicked }) => {
   });
 
   const handleViewportChange = useCallback((newViewport) => {
-    
+    //  console.log('handleViewportChange called ###', newViewport);
     setViewport(newViewport);
     // save coordinate to reverse lookup address by coordinates
     setAddressCoordinates(newViewport);

@@ -1,15 +1,15 @@
 const predictHQConcerts = require('./predictHQConcerts');
-// const spotifyAccessToken = require('./spotifyAccessToken');
+const spotifyAccessToken = require('./spotifyAccessToken');
 const spotifyArtistSearch = require('./spotifyArtistSearch');
 const spotifyArtistTopTracks = require('./spotifyArtistTopTracks');
 const googleMapsDistance = require('./googleMapsDistance');
 const googleMapsPlaceLatLong = require('./googleMapsPlaceLatLong');
 
-const getPlaylist = async ({ placeId, access_token }) => {
+const getPlaylist = async ({ placeId }) => {
   try {
     const coordinates = await googleMapsPlaceLatLong(placeId);
     const concerts = await predictHQConcerts(coordinates);
-    // const spotifyToken = await spotifyAccessToken();
+    const spotifyToken = await spotifyAccessToken();
     const p = await Promise.all(
       concerts.map(async (concert) => {
         const { entities, location, start, end, title } = concert;
@@ -18,13 +18,13 @@ const getPlaylist = async ({ placeId, access_token }) => {
         const titleScrubbed = title.replace(/[^\w\s]/gi, '');
         const artistSearchResults = await spotifyArtistSearch({
           title: titleScrubbed,
-          access_token: access_token,
+          spotifyToken,
         });
         if (!artistSearchResults || artistSearchResults.length === 0) return;
         const artist = artistSearchResults[0];
         const topTracks = await spotifyArtistTopTracks({
           artistId: artist.id,
-          access_token: access_token,
+          spotifyToken,
         });
         if (!topTracks || topTracks.length === 0) return;
         const tracksToAddtoPlaylist =
@@ -63,7 +63,7 @@ const getPlaylist = async ({ placeId, access_token }) => {
             start,
             end,
             distance,
-            access_token,
+            spotifyToken,
             ticketPriceRange: [],
             ticketsLink: `https://www.google.com/search?q=${title}+tickets`,
           })) || [];

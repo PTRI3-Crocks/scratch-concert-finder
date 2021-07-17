@@ -5,6 +5,10 @@ const userController = require('../controllers/userController');
 const spotifyAuthController = require('../controllers/spotifyAuthController')
 const querystring = require('querystring');
 
+// router.post('/signup', controllers.createUser);
+// router.post('/token', controllers.handleToken);
+// router.post('/login', controllers.verifyUser);
+
 // This route handles the second step in the Spotify Authorization Process, and intercepts a call from Spotify as specified in the Spotify For Developers App dashboard
 router.get('/callback', 
   spotifyAuthController.requestTokens,
@@ -14,7 +18,6 @@ router.get('/callback',
       querystring.stringify({
         access_token: res.locals.access_token,
         refresh_token: res.locals.refresh_token,
-        expires_in: res.locals.expires_in,
       })
     );
   }
@@ -27,9 +30,8 @@ router.get('/login',
     res.redirect(res.locals.authURL)
   });
 
-router.get('/user/:access_token', 
-  // userController.sendUserDetails,
-  userController.getUserData,
+router.get('/user/:id', 
+  userController.sendUserDetails,
   (req, res) => {
     res.status(200).json(res.locals.user);
   });
@@ -41,24 +43,13 @@ router.post('/location-search',
   }
 );
 
+router.post('/spotify-token', spotifyController.sendOAuthToken, (req, res) => {
+  return res.status(200).json(res.locals.token);
+});
+
 router.post('/playlist', spotifyController.sendPlaylist, (req, res) => {
   return res.status(200).json(res.locals);
   // return res.status(200).json(res.locals.playlist);
   //res.locals.concerts
 });
-
-router.get('/refresh-token',
-  spotifyAuthController.exchangeRefreshToken,
-  (req, res) => {
-    // TODO: Redirect is currently hardcoded. This should be updated to route to our homepage or search
-    res.redirect('http://localhost:8080#' +
-      querystring.stringify({
-        access_token: res.locals.access_token,
-        refresh_token: res.locals.refresh_token,
-        expires_in: res.locals.expires_in,
-      })
-    );
-  }
-)
-
 module.exports = router;
