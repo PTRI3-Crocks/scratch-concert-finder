@@ -9,7 +9,7 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
-// import MarkersList from './MarkersList';
+import MarkerList from './MarkerList';
 import axios from 'axios';
 
 const mapboxApiKey = process.env.MAPBOXAPIKEY;
@@ -24,41 +24,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const VenueMap = () => {
+const VenueMap = ({ search, mapZip, playlistData, cardClicked }) => {
+  search && console.log('SEARCH IN VENUE ', search);
+  playlistData && console.log('PLAYLIST DATA IN VENUEMAP ', playlistData);
   // set Markers state
-  // 190 E 72nd St APT 11B, New York, NY 10021
-  /** Marker data should look like this
-   * {
-    "properties": {
-      "Street address": "",
-      "City": "",
-      "State": "",
-      "Zip code": "",
-      "Address": "",
-      "Price": "",
-      "Interest rate": 0,
-      "Type": "",
-      "Size": "",
-      "# bedrooms": 0,
-      "# bathrooms": 0,
-      "Est. monthly mortgage": 0,
-      "Rent array": "",
-      "Est. monthly rent": "",
-      "Price-to-rent ratio": "",
-      "Rating": "",
-      "Image": "",
-      "ZPID": 0
-    },
-    "geometry": {
-      "coordinates": [
-        0,
-        0
-        
-      ],
-      "type": "Point"
-    }
-  }
-   */
+
   const [status, setStatus] = useState(null);
 
   const [markers, setMarkers] = useState({});
@@ -66,6 +36,9 @@ const VenueMap = () => {
   console.log('markers data ', markers);
 
   useEffect(() => {
+    setMarkers(playlistData);
+    setStatus('done');
+    console.log('USE EFFECT DONE', status);
     const defaultLocation = 'Mountain View, CA';
     // const fetchMarkers = async () => {
     //   // update API call status
@@ -92,7 +65,7 @@ const VenueMap = () => {
     //   }
     // };
     // fetchMarkers();
-  }, []);
+  }, [playlistData]);
 
   const classes = useStyles('');
 
@@ -101,7 +74,7 @@ const VenueMap = () => {
 
   const mapStyle = {
     width: '100%',
-    height: '800px',
+    height: '80vh',
   };
 
   const navStyle = {
@@ -110,7 +83,35 @@ const VenueMap = () => {
     left: 0,
     padding: '10px',
   };
+  const zipConvert = async (zip) => {
+    await axios(
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${zip}&key=${process.env.GOOGLE_MAPS_API_KEY}`
+    ).then((data) => {
+      //   console.log('ZIP CONVERT', data);
 
+      handleViewportChange({
+        longitude: data?.data.results['0'].geometry.location.lng,
+        latitude: data?.data.results['0'].geometry.location.lat,
+        zoom: 12,
+        bearing: 0,
+        pitch: 0,
+      });
+
+      console.log(
+        'ZIP ',
+        data?.data.results['0'].geometry.location.lat,
+        data?.data.results['0'].geometry.location.lng
+      );
+    });
+  };
+  useEffect(() => {
+    mapZip && zipConvert(mapZip);
+  }, [mapZip]);
+  //   useEffect(() => {
+  //     search && zipConvert(search);
+  //   }, [search]);
+
+  //when click on location in search, set viewport.
   const [viewport, setViewport] = useState({
     // default location - NY,NY
     longitude: -73.9712,
@@ -159,7 +160,11 @@ const VenueMap = () => {
             {...mapStyle}
             onViewportChange={handleViewportChange}
           >
-            {/* <MarkersList props={markers} status={status} /> */}
+            <MarkerList
+              markers={markers}
+              status={status}
+              cardClicked={cardClicked}
+            />
 
             <div style={navStyle}>
               <NavigationControl />
@@ -167,13 +172,13 @@ const VenueMap = () => {
           </ReactMapGL>
         </Grid>
       </div>
-      <div>
+      {/* <div>
         <Paper className={classes.paper}>
           xs=12 lat: {viewport.latitude} <br />
           lng: {viewport.longitude} <br />
           zoom: {viewport.zoom}
         </Paper>
-      </div>
+      </div> */}
     </Container>
   );
 };
