@@ -1,13 +1,14 @@
 import React, {useState} from 'react';
-import { Center } from '@chakra-ui/react';
+import { background, Center } from '@chakra-ui/react';
 
 const SearchResults = ({ searchResults, handlePlaylist, placeDisplayType, setPlaceDisplayType, access_token }) => {
 
-  console.log(placeDisplayType, 'DISPLAY IN RESULTS')
   const style = {
     display:placeDisplayType,
-    backgroundColor: 'd3d3d3'
+    backgroundColor: 'rgba(69, 123, 157, .7)',
   }
+    
+  
   return (
   <div className="placePanel" style={{ cursor: 'pointer'}}>
     {searchResults.map((result, i) => (
@@ -21,7 +22,6 @@ const SearchResults = ({ searchResults, handlePlaylist, placeDisplayType, setPla
           }}
           key={i}
           id={result.place_id}
-          // style={{ marginTop: '2em' }}
           className="place-item"
         >
           {result.description}

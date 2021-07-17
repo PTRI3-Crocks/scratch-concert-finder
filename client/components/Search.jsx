@@ -9,7 +9,8 @@ import {
   DrawerHeader,
   DrawerContent,
 } from '@chakra-ui/react';
-import { Box, Card, Grid } from '@material-ui/core';
+import { Box, Container, Grid, makeStyles } from '@material-ui/core';
+import { createTheme } from '@material-ui/core/styles';
 import { InfoOutlineIcon } from '@chakra-ui/icons';
 import FetchMapSearchResults from '../api/FetchMapSearchResults';
 import FetchPlaylist from '../api/FetchPlaylist';
@@ -20,8 +21,59 @@ import SearchResults from './SearchResults';
 import Footer from './Footer'
 import style from './Map.css'
 import VenueMap from './VenueMap'
-import ConcertList from './ConcertList';
+import ConcertList from './ConcertList'
 import fetchUserDetails from '../api/FetchUserDetails';
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      light: '#757ce8',
+      main: '#3f50b5',
+      dark: '#002884',
+      contrastText: '#fff',
+    },
+    secondary: {
+      light: '#ff7961',
+      main: '#f44336',
+      dark: '#ba000d',
+      contrastText: '#000',
+    },
+  },
+});
+
+const useStyles = makeStyles((theme) => ({
+  header:{
+    // boxShadow: '0 3px 5px 2px rgba(0, 0, 0, 0.4) ',
+    height: '100%',
+    backgroundColor:'#457b9d',
+    color:'#f1faee',
+    fontSize:'100%',
+    marginTop: '10px',
+    
+    
+  },
+  title:{
+    marginLeft: '40px',
+    fontSize:'120%',
+    fontWeight: '500'
+  },
+
+  mapContainer:{
+    boxShadow: '0 3px 5px 2px rgba(0, 0, 0, 0.4)',
+    height: '82vh',
+    backgroundColor:'#f1faee',
+    margin: 1,
+    padding: 1,
+  },
+  root: {
+    boxShadow: '0 3px 5px 2px rgba(0, 0, 0, 0.4) ',
+    height: '100%',
+    margin: 1,
+    padding: 1,
+    
+  }
+}));
+
 const Search = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [search, setSearch] = useState('');
@@ -43,6 +95,7 @@ const Search = () => {
   // state for username
   const [display_name, setDisplay_name] = useState('');
 
+  const classes = useStyles();
   /* This function is used to parse the URL. When spotify athenticates a user or refreshes a token, an access_token, refresh_token
   and expires_in are sent to the user in the URL. This function parses the URL, sets state to the returned values, and then removes
   the URL with the user data from the browser and the browser history*/
@@ -92,21 +145,18 @@ const Search = () => {
   };
   
   const handleSearchForLocation = async () => {
-    // search && console.log(search,'SEARCH CLICKED')
     const results = await FetchMapSearchResults({ searchQuery: search });
     setSearchResults(results);
+    setSearch('');
   };
 
   const handlePlaylist = async (result, access_token) => {
-     console.log('HANDLE PLAYLIST ',result.structured_formatting.main_text)
      setMapZip(result.structured_formatting.main_text)
-    console.log('MAPZIP ',mapZip)
     const playlistConcert =  await FetchPlaylist({ placeId: result.place_id, access_token: access_token })
     .then((data)=>{
-      console.log(data)
       setPlaylistData(data.playlist);
       setConcerts(data.concerts)
-    })
+    });
  
     const artistList = [];
     const showList = [];
@@ -124,12 +174,10 @@ const Search = () => {
     setTrack(trackList);
   };
   if (loading) return <p>Loading</p>
-searchResults && console.log('SEARCH RESULTS ', searchResults)
-playlistData && console.log('PLAYLIST DATA ', playlistData['0']?.location)
   return (
     <div>
       <Grid container>
-      <Grid item xs={12}>
+      <Grid item xs={12} className={classes.header}>
       <div >
         <div className='title'>In The Loop ∞      
         { display_name 
@@ -146,7 +194,9 @@ playlistData && console.log('PLAYLIST DATA ', playlistData['0']?.location)
           mt={2}
           ml={10}
           mr={7}
-          bg="white"
+          bg="#f1faee"
+          color="#1d3557"
+          fontWeight="500"
           placeholder="Enter your Zip Code to hear artists playing near you"
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={async (e) => {
@@ -163,18 +213,32 @@ playlistData && console.log('PLAYLIST DATA ', playlistData['0']?.location)
           </div>
         </Grid>
         <Grid item xs={4}>
-          <ConcertList playlistData={playlistData} setTrack={setTrack} cardClicked={cardClicked} setCardClicked ={setCardClicked}/>
+          <ConcertList 
+            playlistData={playlistData} 
+            setTrack={setTrack} 
+            cardClicked={cardClicked} 
+            setCardClicked={setCardClicked}
+            />
         </Grid>
-        <Grid item xs={8}>
-      <VenueMap search={search} mapZip ={mapZip} playlistData={playlistData} cardClicked={cardClicked}/>
-      </Grid>
+        <Grid item xs={8} >
+        <Container 
+          className={classes.mapContainer}>
+          <VenueMap 
+            search={search} 
+            mapZip ={mapZip} 
+            playlistData={playlistData} 
+            cardClicked={cardClicked}
+            
+            />
+         </Container>   
+        </Grid>
       </Grid>
       {/* <Map /> */}
 
         <div className="placesPanel">
           
           
-      {searchResults.length > 0 && playlist.length === 0 && (
+      {searchResults.length > 0 && (
         <SearchResults
           access_token={access_token}
           searchResults={searchResults} 

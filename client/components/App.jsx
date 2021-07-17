@@ -5,6 +5,8 @@ import {ThemeProvider, createTheme} from '@material-ui/core';
 import Search from './Search';
 import Signin from './Signin';
 
+
+ 
 const theme = extendTheme({});
 const  loopTheme = createTheme({
   palette:{
@@ -16,6 +18,7 @@ const App = () => (
   <ThemeProvider theme={loopTheme}>
   <ChakraProvider theme={theme}>
     <Router>
+      
       <Switch>
         <Route path="/callback">
           <Search />

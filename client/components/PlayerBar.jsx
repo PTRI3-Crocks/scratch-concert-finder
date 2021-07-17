@@ -4,14 +4,14 @@ import SpotifyPlayer from 'react-spotify-web-playback';
 const Player = ({ access_token, track, playlist }) => {
 
   const playerStyle = {
-    activeColor: '#1cb954',
+    activeColor: '#e63946',
     bgColor: '#333',
-    color: '#fff',
+    color: '#f1faee', 
     loaderColor: '#fff',
-    sliderColor: '#1cb954',
+    sliderColor: '#e63946',
     trackArtistColor: '#333',
     trackNameColor: '#333',
-    altColor: '#c01111',
+    altColor: '#e63946',
     fontFamily: "'Helvetica Neue', sans-serif",
     fontSize: '18px',
     

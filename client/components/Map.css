@@ -4,6 +4,7 @@ body {
   font-family: 'Work Sans';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size: clamp(1.4rem, -0.875rem + 4.6875vw, 2.5rem);
 }
 .overlay{
     z-index: 1;
@@ -14,16 +15,16 @@ body {
     max-height: 20%;
     background-color: rgba(255, 255, 255, 0.7);
     top: 0;
-    left: 0
+    left: 0;
 }
 
-.title{
+/* .title{
     margin-top: 10px;
     margin-left: 40px;
     font-size: 24px;
     font-weight: 600;
     line-height: 1.5;
-}
+} */
 .header{
     background-color: black;
     /* opacity: .5; */
@@ -39,7 +40,7 @@ code {
   position:fixed;
   width: 47%;
   max-width:47%;
-  top: 85px;
+  top: 15%;
   left: 0px;
   /* padding-left:10px; */
   margin-top:10px;
@@ -57,11 +58,9 @@ code {
     margin-top:10px
    
 }
-/* .place-item{
-    padding-left: 40px;
-} */
+
 p{
-    /* position: fixed; */
+    
     background-color: rgba(255, 255, 255, 0.5);
     color: black;
     font-weight: 600;
@@ -70,7 +69,7 @@ p{
     z-index: 1;
 }
 .searchbar{
-  /* margin-top: 20px; */
+  
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -80,8 +79,8 @@ p{
 .place-item {
   background-color: rgba(255, 255, 255, 0.5);
   padding: 10px 10px 10px 10px;
-  font-size: 24px;
-  color: black;
+  font-size: 80%;
+  color: #101e31;
   cursor: pointer;
   width: 100%;
   /* max-width:47%; */
@@ -89,7 +88,7 @@ p{
 
 .place-item:hover{
   background-color: blue;
-  color: white
+  color: #f1faee
 }
 
 .searchResults {  background-color: rgba(255, 255, 255, 0.5);
