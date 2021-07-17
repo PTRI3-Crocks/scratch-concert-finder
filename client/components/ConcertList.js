@@ -13,26 +13,35 @@ import EventCard from './EventCard';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    boxShadow: '0 3px 5px 2px rgba(0, 0, 0, 0.4) ',
+    
     height: '100%',
-    // maxHeight: '800px',
-    margin: 5,
-    padding: 10,
-    overflow: 'scroll-y',
+    maxHeight: '90vh',
+    backgroundColor: 'f1faee',
+    overflow: 'auto',
   },
   titleCard: {
-    margin: 10,
+    margin: 5,
+    backgroundColor: 'f1faee'
   },
+  
   titleCardContent: {
     justifyContent: 'center',
+   
     alignItems: 'center',
-    margin: 5,
+    margin: 0,
+    backgroundColor: 'f1faee'
   },
   title: {
-    fontSize: '2em',
-    fontWeight: 800,
+    fontSize: '60%',
+    fontWeight: 700,
+    color: '1d3557',
+    backgroundColor: 'f1faee'
+  },
+  event: {
+    boxShadow: '0 3px 5px 2px rgba(0, 0, 0, 0.4) ',   
   },
 }));
+
 //click on list card, change color, press play button to play sample song, click find tickets opens new tab
 // for whatever ticket vendor, pin changes color on map to indicated the one selected on list.
 const ConcertList = ({
@@ -44,11 +53,10 @@ const ConcertList = ({
   setAnchorEl,
 }) => {
   const classes = useStyles();
-  console.log('CARDCLICKED IN CONCERTLIST', setCardClicked);
 
   return (
-    <Container className={classes.root} style={{ overflow: 'scroll-y' }}>
-      <Card variant="outlined">
+    <Container className={classes.root} >
+      <Card variant="outlined" className={classes.card}>
         <CardContent className={classes.titleCardContent}>
           <Box className={classes.titlecard}>
             <Typography className={classes.title}>Upcoming Events</Typography>
@@ -58,6 +66,7 @@ const ConcertList = ({
       <Divider />
       {playlistData?.map((event, idx) => (
         <EventCard
+          className={classes.event}
           key={idx}
           idx={idx}
           event={event}
