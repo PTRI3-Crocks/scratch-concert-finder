@@ -11,7 +11,6 @@ import {
 } from '@chakra-ui/react';
 import { Box, Container, Grid, makeStyles } from '@material-ui/core';
 import { createTheme } from '@material-ui/core/styles';
-import { InfoOutlineIcon } from '@chakra-ui/icons';
 import FetchMapSearchResults from '../api/FetchMapSearchResults';
 import FetchPlaylist from '../api/FetchPlaylist';
 import Map from './Map';
@@ -186,7 +185,7 @@ const Search = () => {
               Welcome, {display_name}
             </span> 
           :  
-          <a href={"api/login"}>  Log In to Preview Artists</a>
+          <a href={"api/login"} className='login'>Log In</a>
         }
         </div>
         <div className="searchbar">
