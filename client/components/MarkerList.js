@@ -10,15 +10,6 @@ const MarkersList = ({ markers, status, cardClicked }) => {
   let singleLocation = {};
   console.log('status ', status);
 
-  const [showSingleLocation, setShowSingleLocation] = useState(false);
-
-  const handleOpen = (e, idx) => {
-    e.preventDefault();
-    getDetails(e, features[idx]);
-    // setMapModalOpen(true);
-    console.log('map modal OPEN');
-  };
-
   // setup clicked marker state
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [markerdex, setMarkerdex] = useState(null);
@@ -29,11 +20,11 @@ const MarkersList = ({ markers, status, cardClicked }) => {
     // content = <Spinner />;
   } else if (status === 'done') {
     content = markers?.map((marker, idx) => {
-      console.log('MARKER IN MARKERMAP ', marker);
+      // console.log('MARKER IN MARKERMAP ', marker);
       return (
         <div>
           <Marker
-            {...console.log('IDX IN MARKER', cardClicked)}
+            // {...console.log('IDX IN MARKER', cardClicked)}
             key={idx}
             id={idx}
             longitude={marker.location['0']}
@@ -41,8 +32,8 @@ const MarkersList = ({ markers, status, cardClicked }) => {
             onClick={(e, idx) => {
               setMarkerdex(idx);
               setSelectedMarker(e.target);
-              console.log('TARGET ', e.target);
-              console.log('MARKERINDEX ', markerdex.props.id);
+              // console.log('TARGET ', e.target);
+              // console.log('MARKERINDEX ', markerdex.props.id);
             }}
           >
             <Pin
@@ -67,19 +58,7 @@ const MarkersList = ({ markers, status, cardClicked }) => {
     content = <div>{status}</div>;
   }
 
-  return (
-    <div>
-      {content}
-      {/* {MapModalOpen && (
-        <MapModal
-          open={MapModalOpen}
-          handleClose={handleClose}
-          // propList={features}
-          prop={propDetail}
-        />
-      )} */}
-    </div>
-  );
+  return <div>{content}</div>;
 };
 
 export default MarkersList;

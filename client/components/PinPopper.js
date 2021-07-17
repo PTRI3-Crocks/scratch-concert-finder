@@ -36,7 +36,7 @@ export default function PinPopper({
 
   const open = Boolean(anchorEl);
   const id = open ? 'transitions-popper' : undefined;
-  console.log('ANCHOR IN  PINPOP ', anchorEl, open, idx);
+  // console.log('ANCHOR IN  PINPOP ', anchorEl, open, idx);
 
   return (
     <div>

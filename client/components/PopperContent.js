@@ -34,7 +34,7 @@ export default function PopperContent({
 }) {
   const classes = useStyles();
   const bull = <span className={classes.bullet}>•</span>;
-  console.log('MARKER IN POP CONTENT ', markerdex.props.id, markers);
+  //   console.log('MARKER IN POP CONTENT ', markerdex.props.id, markers);
   const d = new Date(markers[markerdex.props.id].start);
   const m = d.getUTCMonth();
   const date = d.getUTCDate();
