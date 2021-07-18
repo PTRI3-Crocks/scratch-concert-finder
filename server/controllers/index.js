@@ -1,38 +1,38 @@
 const { getPlaylist } = require('../services/getPlaylist');
 const { getLocationSearchResults } = require('../services/getLocationSearchResults');
-const { getUserDetails } = require('../services/getUserDetails');
-const spotifyAccessToken = require('../services/spotifyAccessToken');
-const spotifyAccessTokenOAuth = require('../services/spotifyAccessTokenOAuth');
-const { Token, User } = require('../db/index');
+// const { getUserDetails } = require('../services/getUserDetails');
+// const spotifyAccessToken = require('../services/spotifyAccessToken');
+// const spotifyAccessTokenOAuth = require('../services/spotifyAccessTokenOAuth');
+// const { Token, User } = require('../db/index');
 
-const createUser = async (req, res, next) => {
-  const { name, email, password } = req.query;
-  try {
-    const newUser = await new User({ name, email, password });
-    newUser.save();
-    res.locals.id = newUser._doc._id;
-    res.status(200).json(newUser);
-    next();
-  } catch (e) {
-    console.log('createUser error: ', e.message);
-    res.sendStatus(500) && next(e);
-  }
-};
+// const createUser = async (req, res, next) => {
+//   const { name, email, password } = req.query;
+//   try {
+//     const newUser = await new User({ name, email, password });
+//     newUser.save();
+//     res.locals.id = newUser._doc._id;
+//     res.status(200).json(newUser);
+//     next();
+//   } catch (e) {
+//     console.log('createUser error: ', e.message);
+//     res.sendStatus(500) && next(e);
+//   }
+// };
 
 
 //THIS IS CURRENTLY NOT BEING USED
-const handleToken = async (req, res, next) => {
-  let { tokenId } = req.query;
-  if (!tokenId) return next('No token!');
-  try {
-    tokenId = await spotifyAccessToken(tokenId);
-    res.status(200).json(tokenId);
-    next();
-  } catch (e) {
-    console.log(e.message);
-    res.sendStatus(500) && next(e);
-  }
-};
+// const handleToken = async (req, res, next) => {
+//   let { tokenId } = req.query;
+//   if (!tokenId) return next('No token!');
+//   try {
+//     tokenId = await spotifyAccessToken(tokenId);
+//     res.status(200).json(tokenId);
+//     next();
+//   } catch (e) {
+//     console.log(e.message);
+//     res.sendStatus(500) && next(e);
+//   }
+// };
 
 // const verifyUser = async (req, res, next) => {
 //   const { email, password } = req.query;
@@ -81,50 +81,50 @@ const sendPotentialLocations = async (req, res, next) => {
   }
 };
 
-const sendUserDetails = async (req, res, next) => {
-  const { id } = req.params;
-  try {
-    const user = await getUserDetails(id);
-    res.locals.user = user;
-    return next();
-  } catch(err){
-    return next({
-        log: 'sendUserDetails controller error',
-        message: { err: `Error occurred in sendUserDetails. err log: ${err}` },
-      });
-  }
-};
+// const sendUserDetails = async (req, res, next) => {
+//   const { id } = req.params;
+//   try {
+//     const user = await getUserDetails(id);
+//     res.locals.user = user;
+//     return next();
+//   } catch(err){
+//     return next({
+//         log: 'sendUserDetails controller error',
+//         message: { err: `Error occurred in sendUserDetails. err log: ${err}` },
+//       });
+//   }
+// };
 
-const sendSpotifyOAuthToken = async (req, res, next) => {
-  const { code } = req.body;
+// const sendSpotifyOAuthToken = async (req, res, next) => {
+//   const { code } = req.body;
   
-  try {
-    let token;
-    if (code) {
-      const newSpotifyToken = await spotifyAccessTokenOAuth(code);
-      token = newSpotifyToken.access_token;
-    } else {
-      const spotifyToken = await Token.findOne({ source: 'Spotify OAuth' })
-        .limit(1)
-        .sort({ $natural: -1 });
-      token = spotifyToken.tokenId;
-    }
-    res.locals.token = token;
+//   try {
+//     let token;
+//     if (code) {
+//       const newSpotifyToken = await spotifyAccessTokenOAuth(code);
+//       token = newSpotifyToken.access_token;
+//     } else {
+//       const spotifyToken = await Token.findOne({ source: 'Spotify OAuth' })
+//         .limit(1)
+//         .sort({ $natural: -1 });
+//       token = spotifyToken.tokenId;
+//     }
+//     res.locals.token = token;
     
-    return next();
-  } catch(err){
-    return next({
-        log: 'sendSpotifyOAuthToken controller error',
-        message: { err: `Error occurred in sendSpotifyOAuthToken. err log: ${err}` },
-      });
-  }
-};
+//     return next();
+//   } catch(err){
+//     return next({
+//         log: 'sendSpotifyOAuthToken controller error',
+//         message: { err: `Error occurred in sendSpotifyOAuthToken. err log: ${err}` },
+//       });
+//   }
+// };
 
 module.exports = {
-  createUser,
-  handleToken,
+  // createUser,
+  // handleToken,
   sendPlaylist,
   sendPotentialLocations,
-  sendUserDetails,
-  sendSpotifyOAuthToken,
+  // sendUserDetails,
+  // sendSpotifyOAuthToken,
 };
