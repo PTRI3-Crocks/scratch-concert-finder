@@ -41,8 +41,8 @@ spotifyAuthController.getAuthURL = (req, res, next) => {
 
 /* This controller is part of the Spotify Authorization Code Flow. It sends the auth code, clientId and clientSecret to Spotify. It returns a token which can then
 be used in subsequent API calls */
-spotifyAuthController.requestTokens = (req, res, next) => {
-  // invoke request tokens with the refresh token as the code...
+spotifyAuthController.requestTokens = async (req, res, next) => {
+
   const code = req.query.code || null;
   const state = req.query.state || null;
   const storedState = req.cookies ? req.cookies[stateKey] : null;
@@ -70,34 +70,35 @@ spotifyAuthController.requestTokens = (req, res, next) => {
     },
   };
 
-  axios(authOptions)
-  .then(function(response) { console.log('this is the axios response: ', response.data);
+  try {
+    const response = await axios(authOptions)
     if (response.status === 200) {
-      const access_token = response.data.access_token;
-      const refresh_token = response.data.refresh_token;
-      const expires_in = response.data.expires_in;
 
-      res.locals.access_token = access_token;
-      res.locals.refresh_token = refresh_token;
-      res.locals.expires_in = expires_in;
-        
-      res.cookie('refresh_token', refresh_token, {maxAge: 2592000}); 
+      res.locals.access_token = response.data.access_token;
+      res.locals.refresh_token = response.data.refresh_token;
+      res.locals.expires_in = response.data.expires_in;
+      
+      res.cookie('refresh_token', res.locals.refresh_token, {maxAge: 2592000}); 
 
       return next();
+
     } else {
-      console.log('This is the response error from spotify: ', response.data.error);
+      console.log('This is the response error from spotify in spotifyauthcontroller.requestTokens, error from spotify: ', response.data.error);
     }
-  })   
-
-  .catch((err) => console.log('Error in axios call in spotifyauthcontroller.requestToken, ', err));
+  }
+  catch(err) {
+      console.log('Error in axios call in spotifyauthcontroller.requestToken, ', err);
+  }
 }
-
 
 // This controller uses the refresh token (stored in users cookies) to get a new access token
 // TODO: Test and implement
-spotifyAuthController.exchangeRefreshToken = (req, res, next) => {
-  // check if req.cookies.refresh_token exists, and if it does invoke this code
-    const refresh_token = req.query.refresh_token;
+spotifyAuthController.exchangeRefreshToken = async (req, res, next) => {
+
+  if (req.cookies === 'refresh_token') {
+
+    const refresh_token = req.cookie.refresh_token;
+
     const options = {
       method: 'POST',
       url: 'https://accounts.spotify.com/api/token',
@@ -107,19 +108,27 @@ spotifyAuthController.exchangeRefreshToken = (req, res, next) => {
         refresh_token: refresh_token
       }),
     };
-  
-    axios(options) 
-      .then((response) => {
-        if (response.statusCode === 200) {
-          const refresh_token = response.data.refresh_token;
-          res.clearCookie('refresh_token');
-          res.cookie('refresh_token', refresh_token, {maxAge: 2592000}); 
-        }
-      })
 
-    .catch((err) => {
+    try {
+      const response = await axios(options); 
+      if (response.statusCode === 200) {
+
+        res.clearCookie('refresh_token');
+
+        res.locals.access_token = response.data.access_token;
+        res.locals.refresh_token = response.data.refresh_token;
+        res.locals.expires_in = response.data.expires_in;
+
+        res.cookie('refresh_token', refresh_token, {maxAge: 2592000}); 
+
+        return next();
+      }
+    }
+    catch(err) {
       console.log("error in sporifyAuthController.exchangeRefreshToken, ", err)
-    })
+    }
+  }
+  return next();
 }
 
 

@@ -87,15 +87,14 @@ const Search = () => {
   const [cardClicked, setCardClicked] = useState(null)
   const [anchorEl, setAnchorEl] = useState(null);
 
-  // new state for tokens being returned from backend auth
+  /* state for tokens being returned from spotify auth */
   const [access_token, setAccess_token] = useState('');
   const [refresh_token, setRefresh_token] = useState('')
   const [expires_in, setExpires_in] = useState('')
-
-  // state for username
   const [display_name, setDisplay_name] = useState('');
 
   const classes = useStyles();
+
   /* This function is used to parse the URL. When spotify athenticates a user or refreshes a token, an access_token, refresh_token
   and expires_in are sent to the user in the URL. This function parses the URL, sets state to the returned values, and then removes
   the URL with the user data from the browser and the browser history*/
@@ -120,10 +119,12 @@ const Search = () => {
     getHashParams();
   }, []);
 
-    // Get user details
+  /* Get user details */
   useEffect(async () => {
+    if(access_token) {
       const userDetails = await fetchUserDetails(access_token);
       setDisplay_name(userDetails.display_name);
+    }
   }, [access_token]);
  
   /* This will grab a new token if the current token is expired */
@@ -133,7 +134,6 @@ const Search = () => {
   //     fetchRefreshToken(refresh_token);
   //   };
   //    []});
-
 
   useEffect(() => {
     handleTrack();
@@ -151,45 +151,50 @@ const Search = () => {
   };
 
   const handlePlaylist = async (result, access_token) => {
-     setMapZip(result.structured_formatting.main_text)
-    const playlistConcert =  await FetchPlaylist({ placeId: result.place_id, access_token: access_token })
-    .then((data)=>{
-      setPlaylistData(data.playlist);
-      setConcerts(data.concerts)
-    });
- 
-    const artistList = [];
-    const showList = [];
-    const trackList = [];
-    
-    //remove duplicates from api call result
-    for(const entry of playlistData){
-      if(artistList.includes(entry.artist.name)) continue;
-      artistList.push(entry.artist.name);
-      showList.push(entry);
-      trackList.push(entry.track.uri)
-    };
-    
-    setPlaylist(showList);
-    setTrack(trackList);
+
+    setMapZip(result.structured_formatting.main_text)
+    if (access_token) {
+      const playlistConcert = await FetchPlaylist({ placeId: result.place_id, access_token: access_token })
+
+      setPlaylistData(playlistConcert.playlist);
+      setConcerts(playlistConcert);
+  
+      const artistList = [];
+      const showList = [];
+      const trackList = [];
+      
+      //remove duplicates from api call result
+      for(const entry of playlistData){
+        if(artistList.includes(entry.artist.name)) continue;
+        artistList.push(entry.artist.name);
+        showList.push(entry);
+        trackList.push(entry.track.uri)
+      };
+      
+      setPlaylist(showList);
+      setTrack(trackList);
+  }
   };
+
   if (loading) return <p>Loading</p>
-  return (
+
+return (
+  <div>
+    <Grid container>
+    <Grid item xs={12} className={classes.header}>
     <div>
-      <Grid container>
-      <Grid item xs={12} className={classes.header}>
-      <div >
-        <div className='title'>In The Loop ∞      
-        { display_name 
+      <div className='headerTitle'>
+        In The Loop ∞      
+        {display_name 
           ?  
-            <span>
-              Welcome, {display_name}
-            </span> 
+          <span>
+            Welcome, {display_name}
+          </span> 
           :  
           <a href={"api/login"} className='login'>Log In</a>
         }
-        </div>
-        <div className="searchbar">
+      </div>
+      <div className="searchbar">
         <Input
           mt={2}
           ml={10}
@@ -200,44 +205,39 @@ const Search = () => {
           placeholder="Enter your Zip Code to hear artists playing near you"
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={async (e) => {
-            if (e.key === 'Enter') {
-              
+            if (e.key === 'Enter') {   
               await setPlaceDisplayType('block')
-              handleSearchForLocation();
+              await handleSearchForLocation();
             }
           }}
         />
-        </div>
-        </div>
-        <div className="places">Search for concerts and events near you!
-          </div>
-        </Grid>
-        <Grid item xs={4}>
-          <ConcertList 
-            playlistData={playlistData} 
-            setTrack={setTrack} 
-            cardClicked={cardClicked} 
-            setCardClicked={setCardClicked}
-            />
-        </Grid>
-        <Grid item xs={8} >
-        <Container 
-          className={classes.mapContainer}>
-          <VenueMap 
-            search={search} 
-            mapZip ={mapZip} 
-            playlistData={playlistData} 
-            cardClicked={cardClicked}
-            
-            />
-         </Container>   
-        </Grid>
+      </div>
+    </div>
+    <div className="places">
+      Search for concerts and events near you!
+    </div>
+    </Grid>
+    <Grid item xs={4}>
+      <ConcertList 
+        playlistData={playlistData} 
+        setTrack={setTrack} 
+        cardClicked={cardClicked} 
+        setCardClicked={setCardClicked}
+        />
+    </Grid>
+    <Grid item xs={8} >
+      <Container 
+        className={classes.mapContainer}>
+        <VenueMap 
+          search={search} 
+          mapZip ={mapZip} 
+          playlistData={playlistData} 
+          cardClicked={cardClicked}
+          />
+        </Container>   
       </Grid>
-      {/* <Map /> */}
-
-        <div className="placesPanel">
-          
-          
+    </Grid>
+    <div className="placesPanel">  
       {searchResults.length > 0 && (
         <SearchResults
           access_token={access_token}
@@ -247,23 +247,21 @@ const Search = () => {
           setPlaceDisplayType={setPlaceDisplayType}  
           className="place-item" />
       )}
-      
-      </div>
+    </div>
       {access_token 
         ? 
-          <PlayerBar 
-            access_token={access_token} 
-            track={track} 
-            playlist={playlist}
-          />
+        <PlayerBar 
+          access_token={access_token} 
+          track={track} 
+          playlist={playlist}
+        />
         : 
-          <p>
-            Log in to listen to artists
-          </p>
+        <p>
+          Log in to listen to artists
+        </p>
       }
-      <Footer />
-    </div>
-  );
-};
+    <Footer />
+  </div>
+)};
 
 export default Search;
